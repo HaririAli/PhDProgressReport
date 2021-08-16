@@ -30,33 +30,10 @@ As such, they are considered static access control models that do not react to s
 For this reason, J. Park and R. Sandhu \cite{ucon} proposed the \gls{ucon} model that extends \gls{abac} with mutability of attributes and continuity of access control.
 This is achieved by the continuous monitoring or attributes and by re-evaluating policies when a change occurs.
 To realise the \gls{ucon} model, Lazouski et al. \cite{ucs2012prototype} defined a prototype and a policy model based on the \gls{xacml} standard.
+Researchers have also leveraged \gls{ucon} to address different use-cases and applications \cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}.
 
 
-
-%Researchers have also leveraged \gls{ucon} to address different use-cases and applications \cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}.
-
-
-
-In the last decade, researchers have leveraged \gls{ucon} to address different use cases \cite{ucs2014cloudfed}\cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}\cite{ucs2018perf} including applications that go beyond access control like \gls{ifttt} \cite{ucs2019ifttt}.
-Most applications share a common prototype of \gls{ucon}, known as the \gls{ucs}, that was defined in \cite{ucs2012prototype}.
-It is based on the \gls{xacml} standard and extends the \gls{xacml} architecture as shown in Figure \ref{fig:ucs_architecture}.
-Although different applications may apply slight modifications to the architecture, the core components remain the same.
-The \gls{ch} is the main component that receives access requests and handles authorisations.
-\glspl{pep} send access requests to the \gls{ch} and enforce the corresponding decisions.
-They are typically associated with resources to be protected.
-\glspl{pip} are used by the \gls{ch} to retrieve attributes that are stored and managed by the \glspl{am}.
-The \gls{pdp} is the component that makes access decisions after evaluating policies stored and managed by the \gls{pap}.
-Finally, the \gls{sm} keeps track of and manages all ongoing sessions and uses the \gls{at} to store metadata about sessions and attributes.
-
-
-
-
-Access control is ...
-
-
-
-- We have proposed a policy model to allow users to define their own policies and ensure compliance 
-to regulation
-
-- Researchers have developed UCON further and incorporate it in different use-cases
+% We have proposed a policy model to allow users to define their own policies and ensure compliance to regulation
+n  this  paper,  we  extend  UCS+  and  ALFA  to  supportAdministration and Delegation Profile (ADP) in ALFA policylanguage  by  incorporating  administrative  policies  which  areparticular  policies  to  define  administration  and  delegation.More importantly, we introduce a new policy model that usesadministrative  policies  to  support  user  consent  and  interven-ability,  namely  the  ADP.  The  model  allows  data  owners  todefine  data-centric  policies  to  be  enforced  in  each  and  everystep  of  the  lifecycle  of  their  data  (i.e.  collection,  retention,treatment  and  deletion),  giving  them  full  control  over  their
+data  and  privacy.  Example  of  data  lifecycle  is  represented  inFigure 1 where the various stages of collection, access, usage,storage, transfer and deletion are highlighted
 
