@@ -23,10 +23,30 @@ Similarly, access control models have evolved over the years from \gls{mac} and 
 \gls{rbac} associates permissions with roles that are assigned to subjects and represent job functions, competencies, authorities or responsibilities.
 For instance, all employees that are assigned the role “manager” have all access rights associated with that role \cite{rbac1992nist}\cite{sandhu1996role}.
 \gls{abac} adds more flexibility and granularity over other models by associating access rights with attributes about the subject (e.g., name, address, etc.), the resources (e.g., file type, size, etc.) and the environment (e.g., time, location, etc.) \cite{abac}.
+\gls{capbac} is also another fine-grained access control model used in many systems, where access rights are assigned to subjects in the form of capabilities issued by an authorisation authority.
+Capabilities are typically issued by a \gls{sts} as short-lived tokens that are then presented by the subject to the resource provider which verifies the token and grants or denies access according to the embedded capabilities \cite{fang2005xpola}. 
+The aforementioned access control models assume that roles/attributes/capabilities, and consequently access rights, do not change during access/usage of resources.
+As such, they are considered static access control models that do not react to situation changes, which is a limitation especially in today's dynamic systems such as \gls{iot} or \gls{iov}.
+For this reason, J. Park and R. Sandhu \cite{ucon} proposed the \gls{ucon} model that extends \gls{abac} with mutability of attributes and continuity of access control.
+This is achieved by the continuous monitoring or attributes and by re-evaluating policies when a change occurs.
+To realise the \gls{ucon} model, Lazouski et al. \cite{ucs2012prototype} defined a prototype and a policy model based on the \gls{xacml} standard.
 
-CapBAC
-UCON
-problems with UCON
+
+
+%Researchers have also leveraged \gls{ucon} to address different use-cases and applications \cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}.
+
+
+
+In the last decade, researchers have leveraged \gls{ucon} to address different use cases \cite{ucs2014cloudfed}\cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}\cite{ucs2018perf} including applications that go beyond access control like \gls{ifttt} \cite{ucs2019ifttt}.
+Most applications share a common prototype of \gls{ucon}, known as the \gls{ucs}, that was defined in \cite{ucs2012prototype}.
+It is based on the \gls{xacml} standard and extends the \gls{xacml} architecture as shown in Figure \ref{fig:ucs_architecture}.
+Although different applications may apply slight modifications to the architecture, the core components remain the same.
+The \gls{ch} is the main component that receives access requests and handles authorisations.
+\glspl{pep} send access requests to the \gls{ch} and enforce the corresponding decisions.
+They are typically associated with resources to be protected.
+\glspl{pip} are used by the \gls{ch} to retrieve attributes that are stored and managed by the \glspl{am}.
+The \gls{pdp} is the component that makes access decisions after evaluating policies stored and managed by the \gls{pap}.
+Finally, the \gls{sm} keeps track of and manages all ongoing sessions and uses the \gls{at} to store metadata about sessions and attributes.
 
 
 
@@ -36,12 +56,7 @@ Access control is ...
 
 
 - We have proposed a policy model to allow users to define their own policies and ensure compliance 
-to regulations
-
-- RBAC and ABAC are the most used and well-known models, but they assume that roles/attributes do       
-not change during the usage/access of resources.
-
-- Sandhu proposed the UCON model to support continuity and mutability.
+to regulation
 
 - Researchers have developed UCON further and incorporate it in different use-cases
 
