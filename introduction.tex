@@ -1,1 +1,47 @@
 \section{Introduction}\label{sec:introduction}
+The rise of the ubiquitous Internet (e.g., smartphones, smart wearables, IoT devices, social networks, etc.) enabled the generation, collection and processing of huge amounts of personal data such as location, health records, user behaviour and video feeds \cite{iotdata}.
+As a result, data security and user privacy have become major concerns fueled by the abuse of personal data and by privacy-related incidents such as the Cambridge Analytica scandal \cite{davies2015ted}.
+Privacy laws and regulations, such as the \gls{gdpr} \cite{gdpr}, have been introduced to address these concerns.
+Moreover, many initiatives such as GAIA-X and \gls{idsa} \cite{eudigitalsov} have been launched with the objective of controlling data access and usage, enforcing policies, guaranteeing compliance with regulations, and ensuring that digital systems are privacy-preserving.
+Such initiatives rely on \gls{iam} solutions, which have become more prevalent as access control and privacy requirements become more complex and resources get distributed across increasingly heterogeneous environments.
+
+\gls{iam} is the management of the digital representations of real-world entities (e.g., people, organisations, objects, software, etc.) and its association and orchestration with authentication and authorisation solutions that ensure that only authorised entities get access to data and resources \cite{vallois2021blockchain} \cite{chadwick2009federated}.
+Digital identities have evolved from centralised identity to federated identity, then to user-centric identity and most recently to the emerging \gls{ssi} \cite{sovrin2016inevitable}.
+Centralised identity have been used in the majority of Internet and web services such as social networks or eCommerce services.
+In such systems, digital identities are completely under the control of a single entity, which is the service provider.
+This led to scalability issues as such systems could not handle the accelerating growth of users and variety of services, giving rise to \gls{fim} that allows the use of the same identity to access different IT resources in heterogeneous environments within the same federation (e.g., enterprise, organisation, etc.).
+\gls{fim} also allows digital identities to be ported between different federations according to established trust relationships \cite{sovrin2016inevitable}\cite{xu2020identity}\cite{shim2005fim}.
+Both federated and centralised identity are fully controlled by organisations rather than the identity owners, which is why user-centric identity was introduced as it allows identity owners to control and authorise when and how to disclose their identity information.
+However, user-centric identity cannot enable owner to fully control and manage their digital identities because identity information is still physically stored and managed by organisations \cite{sovrin2016inevitable}\cite{xu2020identity}.
+\gls{ssi} emerged to give identity owners full control over their digital identities and to provide security and portability of digital identities.
+This removes the centralised and external control over identities and make identity owners independent of any organisations \cite{sovrin2016inevitable}.
+\gls{ssi} have been gaining a lot of attention and is being adopted in many initiatives such as GAIA-X and \gls{essif}.
+However, there are several problems that are yet to be solved in order to support a wide adoption of \gls{ssi}.
+This is because \gls{ssi} technologies are still immature, and because organisation have invested heavily in traditional identity management systems such as \gls{fim} or centralised identity.
+
+Similarly, access control models have evolved over the years from \gls{mac} and \gls{dac} \cite{sandhu1993lattice} to the most prominent models, \gls{rbac} \cite{rbac1992nist} and \gls{abac} \cite{abac}.
+\gls{rbac} associates permissions with roles that are assigned to subjects and represent job functions, competencies, authorities or responsibilities.
+For instance, all employees that are assigned the role “manager” have all access rights associated with that role \cite{rbac1992nist}\cite{sandhu1996role}.
+\gls{abac} adds more flexibility and granularity over other models by associating access rights with attributes about the subject (e.g., name, address, etc.), the resources (e.g., file type, size, etc.) and the environment (e.g., time, location, etc.) \cite{abac}.
+
+CapBAC
+UCON
+problems with UCON
+
+
+
+
+Access control is ...
+
+
+
+- We have proposed a policy model to allow users to define their own policies and ensure compliance 
+to regulations
+
+- RBAC and ABAC are the most used and well-known models, but they assume that roles/attributes do       
+not change during the usage/access of resources.
+
+- Sandhu proposed the UCON model to support continuity and mutability.
+
+- Researchers have developed UCON further and incorporate it in different use-cases
+
