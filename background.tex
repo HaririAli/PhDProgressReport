@@ -1,6 +1,32 @@
 \section{Background and Research Problems}\label{sec:background}
+This section describes the state of the art and outline the research problems that need to be addressed.
 
-\subsection{\acrfull{ucon}}
+\subsection{\acrfull{ucon} Model}
+The \gls{ucon} model was proposed by Park and Sandhu \cite{ucon} as generalisation of access control that covers authorisations, obligations and conditions, and grants or denies access based on attributes.
+Authorisations are functional predicates over subject and object attributes, and must be satisfied to grant access rights; Obligations are mandatory actions that must be fulfilled in order to grant access rights; and Conditions are environmental or situational requirements that must be met to grant access rights.
+The main novelty of \gls{ucon} is that it extends access control with mutability of attributes and continuity of control.
+Unlike preceding models, \gls{ucon} assumes that attribute values may change during authorisations.
+For this reason, \gls{ucon} specifies that authorisations, obligations and conditions must be evaluated before access starts, while access is in progress, and after access ends, which adds continuity of control.
+Therefore, if an attribute value changes while access is in progress, and the security policy is not satisfied anymore, \gls{ucon} revokes the granted authorisation.
+
+
+
+
+
+% UCON introduced by Sandhu as extension with continuity and mutability
+% the model was intended for DRM but it can cover a wide variety of use-cases
+% Fabio proposed an architecture and policy language for UCON
+% CNR applied UCON in multiple use-cases
+% Dimitrakos extended the pre state by adding a counter but this is a hack because counter can expire before the intended objective
+% The pre and post states must be extended on the model level
+% there is no problem with them having a long lifetime on the model level. This is implementation detail.
+% Multiple state models may be needed. 
+% The three phases are not enough and there may be more phases.
+% Classifying policies by phases is actually unnecessary.
+% Decision does not necessarily have an effect on the state and no need to re-evaluate.
+% UCON lacks formalism in the sense that it is 
+
+
 % state of the art
 % ucon formalism
 % session management in distributed UCON
@@ -10,7 +36,7 @@
 % applications beyond access control that require actions
 
 
-\subsection{Stateful Access Control}
+% \subsection{Stateful Access Control}
 % Negotiation before authorisation
 % TBD
 
