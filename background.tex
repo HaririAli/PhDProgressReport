@@ -4,25 +4,63 @@ This section describes the state of the art and outline the research problems th
 \subsection{\acrfull{ucon} Model}
 The \gls{ucon} model was proposed by Park and Sandhu \cite{ucon} as generalisation of access control that covers Authorisations \((A)\), oBligations \((B)\) and Conditions \((C)\), and grants or denies access based on attributes.
 Authorisations are functional predicates over subject and object attributes, and must be satisfied to grant access rights; Obligations are mandatory actions that must be fulfilled in order to grant access rights; and Conditions are environmental or situational requirements that must be met to grant access rights.
+
 The main novelty of \gls{ucon} is that it extends access control with mutability of attributes and continuity of control.
 Unlike preceding models, \gls{ucon} assumes that some attribute values may change during usage of resources.
 For this reason, it specifies that authorisations, obligations and conditions must be evaluated before access starts, while access is in progress, and after access ends, which adds continuity of control.
 Therefore, if an attribute value changes while access is in progress, and the security policy is not satisfied anymore, \gls{ucon} revokes the granted authorisation.
 \gls{ucon} classifies the decision predicates of authorisations, obligations and conditions as \(pre\) and \(on\) (i.e., \(preA\), \(onA\), \(preB\), \(onB\), \(preC\) and \(onC\)), where \(pre\) predicates are evaluated before usage starts and \(on\) predicates are evaluated while usage is in progress.
 \gls{ucon} also classifies attribute updates as \(preUpdates\), \(onUpdates\) and \(postUpdates\), such that \(preUpdates\) happen before usage starts, \(onUpdates\) take place during usage, and \(postUpdates\) change attribute values after the end of usage.
-%TODO: obligations for attribute updates and post obligations for actions after authorisation 
+Katt et al. \cite{katt2008general} consider attributes as a special type of obligations and they argue that attribute updates can be expressed as obligations that must be performed by the system.
+Accordingly, extend the original \gls{ucon} model by introducing post obligations \(postB\), which are used to express \(postUpdates\) as well as actions that must be taken after the usage ends.
 In \cite{park2004mutability}, Park et al. defined a taxonomy for attribute management in \gls{ucon}.
 They classified attributes as immutable and mutable, where immutable attributes are the ones that require administrative actions to be changed while mutable attributes are the ones that change as result of usage itself. 
 Their taxonomy also defines subcategories under immutable and mutable attributes, but this is out of the scope of this report.
 Park et al. assume that attribute updates occur only as a side-effect of usage (i.e., as part of the enforcement of the security policy or due to actions performed by subjects).
 They also assume that environmental attributes do not change during usage.
-However, as described by Carniani et al. \cite{ucs2016cloudsys} attributes may change due to reasons unrelated to usage (e.g., subject's location changes as they move), and environmental attributes can change during usage (e.g., date, time, CPU load, temperature, etc.).
-\gls{ucon} dist
+However, as described by Carniani et al. \cite{ucs2016cloudsys}, attributes may change due to reasons unrelated to usage (e.g., subject's location changes as they move), and environmental attributes can change during usage (e.g., date, time, CPU load, temperature, etc.).
+
+Zhang et al. \cite{zhang2005formal} provided a logical specification and formalised the \gls{ucon} model using an extension of Lamport's Temporal Logic for Actions (TLA).
+They define \gls{ucon} policies as temporal logic formulas that are built from predicates about subject, object and environment attributes, as well as actions performed by the system or by subjects.
+Zhang et al. also defined state model such that the state of a single usage process transitions among the following six states: \(initial\), \(requesting\), \(denied\), \(accessing\), \(revoked\), and \(end\), as shown in Figure \ref{fig:ucon_state_model}.
+The \(initial\) indicates that the usage request has not been generated yet.
+The \(requesting\) state means that the request has been generated and is waiting for the decision. 
+The process transitions to the \(denied\) state if the system denies the request as per the security policy.
+Although the \(denied\) state may include attribute updates, it is considered a terminal state that terminate the usage process.
+If the system permits access, then the usage process transits into the \(accessing\) state, which implies that the subject is accessing the object.
+The \(revoked\) state is reached when the system revokes access due to a change in attribute values while subject is still accessing the resource.
+Finally, the usage process goes to the \(end\) state when the subject finishes usage.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{figures/uconabc_state_model.png}
+	\caption{\gls{ucon} state transitions }
+	\label{fig:ucon_state_model}
+	\centering
+\end{figure}
+
+
+The original \gls{ucon} model assumes that obligations are actions that must be fulfilled by the subject to gain access.
+However, obligations can also express actions to be taken by the system itself rather than the subject as described by Katt et al. \cite{katt2008general}.
+For instance, the security policy may define that a notification must be sent or a file must be deleted after the end of the usage session.
+Katt et al. also extended the state model by introducing the \(ongoing-check\) state to represent transitions and decision check that occur while usage is in progress as a result of attribute updates.
+The extended state model is shown in Figure \ref{fig:ucon_ext_state_model}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{figures/uconabc_ext_state_model.png}
+	\caption{\gls{ucon} extended state transitions }
+	\label{fig:ucon_ext_state_model}
+	\centering
+\end{figure}
 
 
 
 
-% the model was intended for DRM but it can cover a wide variety of use-cases
+
+. To realise the model, Colombo et al. [5] proposed a new policy language, U-XAMCL, that extends XACML semantics with UCON novelties and defines an architecture to enforce UCON policies.    This architecture has become the basis of all UCON implementations and applications (albeit with minor modifications), and it is sometimes designated as the Usage Control System (UCS). For instance, Lazouski [6] et al. developed a web-based UCS prototype that evaluates U-XACML policies and realises the UCS architecture. Another example is the usage control framework for cloud systems that was introduced by Carniani et al. [7]  to continuously regulate access to cloud resources. Likewise, a fault-tolerant decentralised peer-to-peer UCS framework for the Internet of Things (IoT) is presented in [8]. More importantly, a hierarchical architecture that improves the efficiency and performance of UCS is defined in [9]. Similarly, Martinelli et al. [10] extended UCS architecture to formalise the management of UCS obligations and enforce them. 
+
+
 % Fabio proposed an architecture and policy language for UCON
 % CNR applied UCON in multiple use-cases
 % Dimitrakos extended the pre state by adding a counter but this is a hack because counter can expire before the intended objective
@@ -42,14 +80,3 @@ However, as described by Carniani et al. \cite{ucs2016cloudsys} attributes may c
 % continuity of pre and post
 % limitation of the three phases
 % applications beyond access control that require actions
-
-
-% \subsection{Stateful Access Control}
-% Negotiation before authorisation
-% TBD
-
-\subsection{\acrfull{iam}}
-% EU Digital Sovereignty 
-% GAIA-X 
-% SSI 
-% Dataspaces and data flow control
