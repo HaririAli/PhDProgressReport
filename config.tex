@@ -6,7 +6,44 @@
 \usepackage{soul}
 \usepackage{url}
 \usepackage[inline]{enumitem}
+\usepackage{listings}
 \loadglsentries{abbreviations.tex}
+
+\lstdefinestyle{numbers}{
+	numbers=right,
+	stepnumber=1,
+	numberstyle=\tiny\color{magenta},
+	numbersep=-7pt
+}
+
+\lstdefinestyle{MyFrame}{
+	basicstyle={\scriptsize},
+	backgroundcolor=\color{gray!10},
+	xleftmargin=0.5em,
+	xrightmargin=0.5em,
+	framexrightmargin=0.5em,
+	frame=shadowbox,
+	frame=single,
+	breaklines=true,
+	linewidth=\linewidth,
+	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{blue}\hookrightarrow\space}},
+	columns=fullflexible,
+	captionpos=t,
+	tabsize=4,
+	showstringspaces=false,
+	breakatwhitespace=false,
+}
+
+\lstset{
+	style=numbers,
+	style=MyFrame,
+	escapechar={|},
+	stringstyle=\color{gray},
+	identifierstyle=\color{black},
+	keywordstyle=\color{blue},
+	upquote=true,
+	morekeywords={policy, target, clause, rule, condition, on, permit, obligation, Attributes, in, @context, credentialSubject, id, issuanceDate, issuer, type, apply},
+}
 
 % \usepackage{todonotes}
 % \renewcommand\UrlFont{\color{blue}\rmfamily}
