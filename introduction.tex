@@ -1,68 +1,150 @@
-\section{Introduction}\label{sec:introduction}
-The rise of the ubiquitous Internet (e.g., smartphones, smart wearables, IoT devices, social networks, etc.) enabled the generation, collection and processing of huge amounts of personal data such as location, health records, user behaviour and video feeds \cite{iotdata}.
-As a result, data security and user privacy have become major concerns fueled by the abuse of personal data and by privacy-related incidents such as the Cambridge Analytica scandal \cite{davies2015ted}.
-Privacy laws and regulations, such as the \gls{gdpr} \cite{gdpr}, have been introduced to address these concerns.
-Moreover, many initiatives such as GAIA-X and \gls{idsa} \cite{eudigitalsov} have been launched with the objective of controlling data access and usage, enforcing policies, guaranteeing compliance with regulations, and ensuring that digital systems are privacy-preserving.
-Such initiatives rely on \gls{iam} solutions, which have become more prevalent as access control and privacy requirements become more complex and resources get distributed across increasingly heterogeneous environments.
+\section{State of the Art}\label{sec:background}
+This section describes the state of the art and outline the research problems that need to be addressed.
 
-\gls{iam} is the management of the digital representations of real-world entities (e.g., people, organisations, objects, software, etc.) and its association and orchestration with authentication and authorisation solutions that ensure that only authorised entities get access to data and resources \cite{vallois2021blockchain} \cite{chadwick2009federated}.
-Digital identities have evolved from centralised identity to federated identity, and most recently to the emerging \gls{ssi} \cite{sovrin2016inevitable}.
-Centralised identity have been used in the majority of web services such as social networks or eCommerce, where each service has its own \gls{iam} system and its own database of identities.
-federated identity was introduced to address the accelerated growth of users and services as it allows the use of the same digital identity across different IT systems in heterogeneous environments within the same federation (e.g., enterprise, organisation, etc.).
-It also allows digital identities to be ported between different federations according to established trust relationships \cite{sovrin2016inevitable}\cite{xu2020identity}\cite{shim2005fim}.
-Both federated and centralised identities are fully controlled by organisations rather than the identity owners, which raised privacy concerns.
-For this reason, \gls{ssi} emerged to give identity owners full control over their digital identities, removing the centralised and external control over identities and making identity owners independent of any organisations \cite{sovrin2016inevitable}.
-\gls{ssi} has been gaining a lot of attention and is being adopted in many initiatives such as GAIA-X and \gls{essif}.
-However, there are several problems that are yet to be solved in order to support a wide adoption of \gls{ssi}, especially since \gls{ssi} technologies are still immature, and because organisation have invested heavily in traditional identity management systems such as \gls{fim} or centralised identity.
+\subsection{\acrfull{ucon} Model}\label{sec:ucon_model}
+The \gls{ucon} model was proposed by Park and Sandhu \cite{ucon} as generalisation of access control that covers Authorisations \((A)\), oBligations \((B)\) and Conditions \((C)\), and grants or denies access based on attributes.
+Authorisations are functional predicates over subject and object attributes, and must be satisfied to grant access rights; Obligations are mandatory actions that must be fulfilled to permit access; and Conditions are environmental or situational requirements that must be met to grant access rights.
+The main novelty of \gls{ucon} is that it extends access control with mutability of attributes and continuity of control.
+Unlike preceding models, \gls{ucon} assumes that some attribute values may change during usage of resources.
+For this reason, it specifies that authorisations, obligations and conditions must be evaluated before access starts, while access is in progress, and after access ends, which adds continuity of control.
+Therefore, if an attribute value changes while access is in progress, and the security policy is not satisfied anymore, \gls{ucon} revokes the granted authorisation.
+\gls{ucon} classifies authorisation, obligation and condition predicates as \(pre\) and \(ongoing\)
+\footnote{The original model classifies predicates as \(pre\) and \(on\), but in this report we refer to the \(on\) classification as \(ongoing\) (for clarity and consistency).} 
+(i.e., \(preA\), \(ongoingA\), \(preB\), \(ongoingB\), \(preC\) and \(ongoingC\)), where \(pre\) predicates are evaluated before usage starts while \(ongoing\) predicates are evaluated while usage is in progress.
+\gls{ucon} also classifies attribute updates as \(preUpdates\), \(ongoingUpdates\) and \(postUpdates\), such that \(preUpdates\) happen before usage starts, \(ongoingUpdates\) take place during usage, and \(postUpdates\) change attribute values after the end of usage.
 
-Similarly, access control models have evolved over the years from \gls{mac} and \gls{dac} \cite{sandhu1993lattice} to the most prominent models, \gls{rbac} \cite{rbac1992nist} and \gls{abac} \cite{abac}.
-\gls{rbac} associates permissions with roles that are assigned to subjects and represent job functions, competencies, authorities or responsibilities (e.g., employees are assigned roles such as ``manager'' or ``engineer'' and each role has different access rights) \cite{rbac1992nist}\cite{sandhu1996role}.
-\gls{abac} adds more flexibility and granularity by associating access rights with attributes about subjects (e.g., name, address, etc.), objects (e.g., file type, size, etc.) and the environment (e.g., time, location, etc.) \cite{abac}.
-\gls{capbac} is also another fine-grained access control model used in many systems, where access rights are assigned to subjects in the form of capabilities issued by an authorisation authority.
-Capabilities are typically issued by a \gls{sts} as short-lived tokens that are then presented by the subject to the resource provider which verifies the token and grants or denies access according to the embedded capabilities \cite{fang2005xpola}.
-The aforementioned access control models assume that roles/attributes/capabilities, and consequently access rights, do not change during access/usage of resources and as such, they do not react to situation changes.
-For this reason, J. Park and R. Sandhu \cite{ucon} proposed the \gls{ucon} model that extends \gls{abac} with mutability of attributes and monitoring of attribute values as well as continuity of access control and policy re-evaluation.
-\gls{ucon} gained a lot of attention and many researchers have extended and leveraged it to address different use-cases and applications \cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}\cite{pretschner2011dataucon}.
-We also extended \gls{ucon} with the \gls{adp} in \cite{datapal} in order to introduce a new policy model that supports user consent and intervenability by allowing data owners to define data-centric policies enforced at every step of the data lifecycle (i.e., collection, retention, treatment and deletion).
-Although \gls{ucon} extended access control with session-based evaluation and monitoring, and despite the significant works that extended the model and developed it, some limitations still need to be addressed in order to accommodate some emerging use-cases such as data flow control.
-In this report, we outline the state of the state of the art of \gls{ucon}, then we discuss the related research problems and our objectives as well as the research progress and plan.
+In \cite{park2004mutability}, Park et al. defined a taxonomy for attribute management in \gls{ucon}.
+They classified attributes as immutable and mutable, where immutable attributes are the ones that require administrative actions to be changed while mutable attributes are the ones that change as result of usage itself. 
+Their taxonomy also defines subcategories under immutable and mutable attributes, but this is out of the scope of this report.
+Park et al. assume that environmental attributes do not change during usage, and that subject and object attribute updates occur only as a side-effect of usage (i.e., as part of the enforcement of the security policy or due to actions performed by subjects).
+However, as described by Carniani et al. \cite{ucs2016cloudsys}, attributes may change due to reasons unrelated to usage (e.g., subject's location changes as they move), and environmental attributes can change during usage (e.g., date, time, CPU load, temperature, etc.).
 
-The rest of the report of organised as follows:
-Section \ref{sec:background} outlines the state of the art and the research problems.
-The corresponding research objectives are described in Section \ref{sec:objectives}.
-We discuss the research progress and the future plan to complete the objectives in Section \ref{sec:progress}.
-In Section \ref{sec:publications}, we list the progress and plan for publications.
-Finally, we define future directions and draw conclusions in Section \ref{sec:conclusion}.
+The original \gls{ucon} model \cite{ucon} assumes that obligations are actions that must be fulfilled by the subject to gain access.
+However, Katt et al. \cite{katt2008general} argue that obligations can also express actions to be taken by the system itself rather than the subject.
+For example, the security policy may define that a notification must be sent or a file must be deleted after the end of the usage session.
+Moreover, Katt et al. consider attributes as a special type of obligations and they argue that attribute updates can be expressed as obligations that must be performed by the system.
+Accordingly, they extended the original \gls{ucon} model by introducing post obligations \(postB\), which are used to express \(postUpdates\) as well as actions that must be taken after the usage ends.
+The extended model distinguishes between trusted and untrusted obligations, where trusted obligations are system actions that do need fulfilment check, while untrusted obligations must be checked to ensure their fulfilment.
 
-%\gls{iam} is the management of the digital representations of real-world entities (e.g., people, organisations, objects, software, etc.) and its association and orchestration with authentication and authorisation solutions that ensure that only authorised entities get access to data and resources \cite{vallois2021blockchain} \cite{chadwick2009federated}.
-%Digital identities have evolved from centralised identity to federated identity, then to user-centric identity and most recently to the emerging \gls{ssi} \cite{sovrin2016inevitable}.
-%Centralised identity have been used in the majority of Internet and web services such as social networks or eCommerce services.
-%In such systems, digital identities are completely under the control of a single entity, which is the service provider.
-% This led to scalability issues as such systems could not handle the accelerating growth of users and variety of services, giving rise to \gls{fim} that allows the use of the same identity to access different IT resources in heterogeneous environments within the same federation (e.g., enterprise, organisation, etc.).
-%\gls{fim} also allows digital identities to be ported between different federations according to established trust relationships \cite{sovrin2016inevitable}\cite{xu2020identity}\cite{shim2005fim}.
-%Both federated and centralised identity are fully controlled by organisations rather than the identity owners, which is why user-centric identity was introduced as it allows identity owners to control and authorise when and how to disclose their identity information.
-%However, user-centric identity cannot enable owner to fully control and manage their digital identities because identity information is still physically stored and managed by organisations \cite{sovrin2016inevitable}\cite{xu2020identity}.
-%\gls{ssi} emerged to give identity owners full control over their digital identities and to provide security and portability of digital identities.
-%This removes the centralised and external control over identities and make identity owners independent of any organisations \cite{sovrin2016inevitable}.
-%\gls{ssi} have been gaining a lot of attention and is being adopted in many initiatives such as GAIA-X and \gls{essif}.
-%However, there are several problems that are yet to be solved in order to support a wide adoption of \gls{ssi}.
-%This is because \gls{ssi} technologies are still immature, and because organisation have invested heavily in traditional identity management systems such as \gls{fim} or centralised identity.
 
-%Similarly, access control models have evolved over the years from \gls{mac} and \gls{dac} \cite{sandhu1993lattice} to the most prominent models, \gls{rbac} \cite{rbac1992nist} and \gls{abac} \cite{abac}.
-%\gls{rbac} associates permissions with roles that are assigned to subjects and represent job functions, competencies, authorities or responsibilities.
-%For instance, all employees that are assigned the role “manager” have all access rights associated with that role \cite{rbac1992nist}\cite{sandhu1996role}.
-%\gls{abac} adds more flexibility and granularity over other models by associating access rights with attributes about the subject (e.g., name, address, etc.), the resources (e.g., file type, size, etc.) and the environment (e.g., time, location, etc.) \cite{abac}.
-%\gls{capbac} is also another fine-grained access control model used in many systems, where access rights are assigned to subjects in the form of capabilities issued by an authorisation authority.
-%Capabilities are typically issued by a \gls{sts} as short-lived tokens that are then presented by the subject to the resource provider which verifies the token and grants or denies access according to the embedded capabilities \cite{fang2005xpola}. 
-%The aforementioned access control models assume that roles/attributes/capabilities, and consequently access rights, do not change during access/usage of resources.
-%As such, they are considered static access control models that do not react to situation changes, which is a limitation especially in today's dynamic systems such as \gls{iot} or \gls{iov}.
-%For this reason, J. Park and R. Sandhu \cite{ucon} proposed the \gls{ucon} model that extends \gls{abac} with mutability of attributes and continuity of access control.
-%This is achieved by the continuous monitoring or attributes and by re-evaluating policies when a change occurs.
-%To realise the \gls{ucon} model, Lazouski et al. \cite{ucs2012prototype} defined a prototype and a policy model based on the \gls{xacml} standard.
-%Researchers have thereafter developed and leveraged \gls{ucon} to address different use-cases and applications such as \cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}.
-%We also extended \gls{ucon} with the \gls{adp} in \cite{datapal}.
-%We used the \gls{adp} to introduce a new policy model that supports user consent and intervenability by allowing data owners to define data-centric policies enforced at every step of the data lifecycle (i.e., collection, retention, treatment and deletion).
+\subsection{\gls{ucon} Policy Language and Architecture}\label{sec:architecture}
+Lazouski et al. \cite{ucs2012prototype}\cite{uxacml} extended the semantics of the \gls{xacml} \cite{xacml} policy language with \gls{ucon} novelties to capture attribute updates and continuous policy evaluation while preserving a full \gls{abac} baseline. 
+The extended policy language was designated as U-XACML and it introduces an implicit temporal state by classifying policy rule as \(pre\), \(ongoing\) or \(post\) rules such that \(pre\) rules are applicable before granting access, \(ongoing\) rules are applicable while access is in progress, and \(post\) rules are applicable after the end of access.
+The authors assume that the \(pre\) and \(post\) evaluations are duration-less, which means that \(pre\) and \(post\) rules are evaluated only once in a single session.
+On the other hand, they consider the \(ongoing\) evaluation to be continuous such that \(ongoing\) rules are re-evaluated every time an attribute value changes.
+Lazouski et al. also developed a framework for enforcement of U-XACML, where they extended the \gls{xacml} architecture to support attribute monitoring and continuous re-evaluation.
+The main novelty of their architecture was adding the Usage Monitor (UM) component, also known as the \gls{sm}, keeping track of the usage sessions and invokes re-evaluations when a change in attribute values occurs.
+This framework/architecture was later named the \gls{ucs}, and it has been extended and leveraged in multiple use-cases such as \gls{iot} \cite{ucs2017iot}, cloud systems \cite{ucs2016cloudsys}, Android mobile devices \cite{ucs2017android}, network management \cite{ucs2020mano}, and messaging protocols \cite{ucs2017mqtt}.
+In \cite{ucs2019ifttt}, La Marra et al. used \gls{ifttt} to express \gls{ucon} obligations, then they leveraged \gls{ucs} for use-cases that go beyond access control.
+They specifically used \gls{ucon} to trigger \gls{ifttt} applets based on policy-evaluation.
+One example of such use-cases is a smart farm where the humidity and temperature are collected from sensors and used as attributes in \gls{ucs}, which decides when to start watering or heating the plants.
 
-%Although \gls{ucon} extended access control with session-based and stateful evaluation and monitoring, it still has some limitations and cannot accommodate some emerging use-cases such as data flow control.
-%Therefore, a generalisation of the \gls{ucon} model is needed to support applications that go beyond access control and to form the foundation for future session-based stateful policy-based systems.
-%In this report, we outline the state of the state of the art of this research, then we discuss the research problems and our objectives as well as the research progress and plan.
+Our team introduced an enhanced and optimised version of \gls{ucs} designated as \acrshort{ucsp} \cite{ucs2020plus}.
+\acrshort{ucsp} supports auxiliary evaluators such as trust/confidence level evaluators that can be used and included in the decision making process.
+%\acrshort{ucsp} also extends \gls{ucon} sessions to cover continuous monitoring before granting access, during authorisation and after the end or revocation of access.
+%This supports pre- and post-usage interactions such as multi-factor authentication, safe revocation, etc.
+It also introduces internal attributes that are specific to a single usge session and managed internally as part of the session.
+Instead of U-XACML, \acrshort{ucsp} uses the \gls{alfa} \cite{alfa} policy language, which is a pseudocode domain-specific policy language that maps directly to \gls{xacml} without adding any new semantics.
+It is much less verbose than \gls{xacml} and consequently more compact and shorter in size, thus using \gls{alfa} in \acrshort{ucsp} results in a considerable improvement in performance and efficiency.
+\gls{alfa} maps directly to \gls{xacml} and has the same semantics.
+It conforms to the same hierarchical structure of \gls{xacml} which incorporates policy sets, policies and rules.
+A policy set consists of one or more policy sets and/or policies, and a policy consists of one or more rules.
+Like \gls{xacml}, \gls{alfa} also relies on combining algorithms to resolve conflicts when multiple policies or rules are applicable.
+%For each usage session, \acrshort{ucsp} selects a top-level policy set (i.e., not nested under any other policy set), and associates it with the usage session.
+%\acrshort{ucsp} assumes that top-level policy sets are mutually exclusive, so for each usage session there will be one and only one applicable policy set that will be re-evaluated throughout the lifecycle of the session.
+To classify rules as \(pre\), \(ongoing\) and \(post\), \acrshort{ucsp} does not add any new semantics to \gls{alfa} but rather uses an internal attribute to capture the implicit temporal state.
+The attribute is called \texttt{step} and it takes one of the following three string values: \texttt{``pre''}, \texttt{``ongoing''} or \texttt{``post''}, and it is updated by the system as the usage session moves among the three states.
+Therefore, rules can be classified by including a check on the value of the \texttt{step} attribute in each rule.
+
+\acrshort{ucsp} leverages the publish/subscribe pattern to boost concurrency between policy parsing and evaluation, and attribute retrieval.
+This maximises performance and minimizes the need for high network speeds or computational resources.
+\acrshort{ucsp} also improves the ability to upgrade or substitute component services and migrate to a distributed deployment where necessary.
+Figure \ref{fig:ucs_architecture} illustrates the architecture of \acrshort{ucsp}, which consists of 8 major components as follows:
+\texttt{\gls{ch}} is the core component that receives access requests and manages authorisation workflows.
+\texttt{\gls{msgbus}} supports communications between components using the \gls{pubsub} pattern.
+\texttt{\gls{pep}} is the interface of \acrshort{ucsp} and the component that protects resources. It creates access requests, invokes the \gls{ch} and enforces decisions.
+\texttt{\gls{pdp}} is the component that evaluates policies and makes access decisions.
+\texttt{\gls{pap}} stores and manages policies and is used by the \gls{pdp} to retrieve applicable policies.
+\texttt{\gls{pip}} defines where to find attributes and how to monitor them.
+\texttt{PIP Registry} manages \glspl{pip} and defines which \glspl{pip} are responsible for which attributes.
+\texttt{\gls{sm}} manages and keeps track of all ongoing sessions to support the continuity of control. 
+\texttt{\gls{at}} is a cache of attribute values and other metadata.
+\texttt{\gls{ar}} is an auxiliary component in charge of querying and updating attribute values.
+\texttt{\gls{om}} handles and manages policy and rule obligations.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figures/ucs_architecture.png}
+	\caption{\gls{ucs}+ architecture}
+	\label{fig:ucs_architecture}
+\end{figure}
+
+
+\subsection{\gls{ucon} State Model}\label{sec:state_model}
+Zhang et al. \cite{zhang2005formal} provided a logical specification and formalised the \gls{ucon} model using an extension of Lamport's Temporal Logic for Actions (TLA).
+They define \gls{ucon} policies as temporal logic formulas that are built from predicates about subject, object and environment attributes, as well as actions performed by the system or by subjects.
+They also defined the state model of \gls{ucon} such that the state of a single usage process transitions among the following six states: \(initial\), \(requesting\), \(denied\), \(accessing\), \(revoked\), and \(end\), as shown in Figure \ref{fig:ucon_state_model}.
+The \(initial\) indicates that the usage request has not been generated yet.
+The \(requesting\) state means that the request has been generated and is waiting for the decision. 
+The process transitions to the \(denied\) state if the system denies the request as per the security policy.
+Although the \(denied\) state may include attribute updates, it is considered a terminal state that terminate the usage process.
+If the system permits access, then the usage process transits into the \(accessing\) state, which implies that the subject is accessing the object.
+The \(revoked\) state is reached when the system revokes access due to a change in attribute values while subject is still accessing the resource.
+Finally, the usage process goes to the \(end\) state when the subject finishes usage.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figures/uconabc_state_model.png}
+	\caption{\gls{ucon} state transitions }
+	\label{fig:ucon_state_model}
+	\centering
+\end{figure}
+
+Katt et al .\cite{katt2008general} argued that this state model does not show the decision recheck state that occurs due to changes while usage is in progress.
+For this reason, they extended the state model by introducing the \(ongoing-check\) such that the system moves to this state when a change occurs while usage is in progress.
+Decision predicates are then re-evaluated and the system goes back to the \(accessing\) state if the access is still granted.
+Otherwise, the system transitions to the \(revoked\) state if access is revoked.
+They also omitted the attribute update events because they consider attribute update events to be a special type of obligations as described in Section \ref{sec:ucon_model}.
+The extended state model is shown in Figure \ref{fig:ucon_ext_state_model}
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figures/uconabc_ext_state_model.png}
+	\caption{\gls{ucon} extended state transitions }
+	\label{fig:ucon_ext_state_model}
+	\centering
+\end{figure}
+
+Based on the policy model of Lazouski et al., we provide an alternative view of \gls{ucon}'s state model compared to the state models described in \cite{zhang2005formal} and \cite{katt2008general}.
+This is shown in Figure \ref{fig:ucon_cnr_state_model} where the evaluation session is initiated by a usage request, and starts with the \(pre\) state in which \(pre\) rules are evaluated.
+If the decision is \(deny\), then the evaluation session terminates.
+Otherwise, the session moves to the \(ongoing\) state where attributes are monitored and \(ongoing\) rules are re-evaluated when a change occurs.
+The session stays in the \(ongoing\) phase as long as the decision remains \(permit\) and usage is in progress.
+If a re-evaluation results into a \(deny\) decision or if the subject ends their usage, then the session moves to the exit state, or to the \(post\) state where \(post\) rules are evaluated and the corresponding obligations are enforced.
+Unlike \cite{zhang2005formal} and \cite{katt2008general}, in this view of the state model we do not consider usage requests and policy evaluations as systems states.
+Instead, we view them as atomic actions that trigger transitions among the \(pre\), \(ongoing\) and \(post\) states, because transitions occur due to the decisions that are determined by policy evaluations. 
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figures/ucon_cnr_state_model.png}
+	\caption{Alternative view of \gls{ucon} state model}
+	\label{fig:ucon_cnr_state_model}
+	\centering
+\end{figure}
+
+In \cite{ucs2020plus}, our team argues that denying access does not necessarily require terminating the authorisation process, but rather keep monitoring the state and re-evaluating when a change occurs.
+This is essential for use-cases that require a safe revocation of access before aborting the authorisation session, or in use-cases that allow multiple attempts to obtain or maintain access such as collaborative, multi-modal or behavioural authentication.
+For this reason, \acrshort{ucsp} sessions were extended to cover continuous monitoring when the evaluation decision is \(indeterminate\) (i.e., a decision cannot be made due to missing information or other reasons).
+This was achieved using an internal counter attribute that is incremented every time a re-evaluation is performed.
+The counter is also used in the default deny rule such that the default rule is not applicable as long as the counter is below a specific threshold.
+Therefore, if access cannot be granted, \acrshort{ucsp} keeps monitoring the session and re-evaluating policies until the counter expires. 
+The resulting state model is an extension to the one described in Figure \ref{fig:ucon_cnr_state_model}, where local state transitions are added to the \(pre\), \(ongoing\) and \(post\) states.
+The state model of \acrshort{ucsp} is shown in Figure 
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=0.99\linewidth]{figures/ucsp_state_model.png}
+	\caption{\acrshort{ucsp} state model}
+	\label{fig:ucsp_state_model}
+	\centering
+\end{figure}
