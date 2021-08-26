@@ -30,6 +30,7 @@ The extended model distinguishes between trusted and untrusted obligations, wher
 \subsection{\gls{ucon} Policy Language and Architecture}\label{sec:architecture}
 Lazouski et al. \cite{ucs2012prototype}\cite{uxacml} extended the semantics of the \gls{xacml} \cite{xacml} policy language with \gls{ucon} novelties to capture attribute updates and continuous policy evaluation while preserving a full \gls{abac} baseline. 
 The extended policy language was designated as U-XACML and it introduces an implicit temporal state by classifying policy rule as \(pre\), \(ongoing\) or \(post\) rules such that \(pre\) rules are applicable before granting access, \(ongoing\) rules are applicable while access is in progress, and \(post\) rules are applicable after the end of access.
+We refer to these three classifications as the \textit{phases} of a \gls{ucon} session.
 The authors assume that the \(pre\) and \(post\) evaluations are duration-less, which means that \(pre\) and \(post\) rules are evaluated only once in a single session.
 On the other hand, they consider the \(ongoing\) evaluation to be continuous such that \(ongoing\) rules are re-evaluated every time an attribute value changes.
 Lazouski et al. also developed a framework for enforcement of U-XACML, where they extended the \gls{xacml} architecture to support attribute monitoring and continuous re-evaluation.
@@ -53,7 +54,7 @@ Like \gls{xacml}, \gls{alfa} also relies on combining algorithms to resolve conf
 %For each usage session, \acrshort{ucsp} selects a top-level policy set (i.e., not nested under any other policy set), and associates it with the usage session.
 %\acrshort{ucsp} assumes that top-level policy sets are mutually exclusive, so for each usage session there will be one and only one applicable policy set that will be re-evaluated throughout the lifecycle of the session.
 To classify rules as \(pre\), \(ongoing\) and \(post\), \acrshort{ucsp} does not add any new semantics to \gls{alfa} but rather uses an internal attribute to capture the implicit temporal state.
-The attribute is called \texttt{step} and it takes one of the following three string values: \texttt{``pre''}, \texttt{``ongoing''} or \texttt{``post''}, and it is updated by the system as the usage session moves among the three states.
+The attribute is called \texttt{step} and it takes one of the following three string values: \texttt{``pre''}, \texttt{``ongoing''} or \texttt{``post''}, and it is updated by the system as the usage session moves among the three phases.
 Therefore, rules can be classified by including a check on the value of the \texttt{step} attribute in each rule.
 
 \acrshort{ucsp} leverages the publish/subscribe pattern to boost concurrency between policy parsing and evaluation, and attribute retrieval.
@@ -116,13 +117,13 @@ The extended state model is shown in Figure \ref{fig:ucon_ext_state_model}
 \end{figure}
 
 Based on the policy model of Lazouski et al., we provide an alternative view of \gls{ucon}'s state model compared to the state models described in \cite{zhang2005formal} and \cite{katt2008general}.
-This is shown in Figure \ref{fig:ucon_cnr_state_model} where the evaluation session is initiated by a usage request, and starts with the \(pre\) state in which \(pre\) rules are evaluated.
+This is shown in Figure \ref{fig:ucon_cnr_state_model} where the evaluation session is initiated by a usage request, and starts with the \(pre\) phase in which \(pre\) rules are evaluated.
 If the decision is \(deny\), then the evaluation session terminates.
-Otherwise, the session moves to the \(ongoing\) state where attributes are monitored and \(ongoing\) rules are re-evaluated when a change occurs.
+Otherwise, the session moves to the \(ongoing\) phase where attributes are monitored and \(ongoing\) rules are re-evaluated when a change occurs.
 The session stays in the \(ongoing\) phase as long as the decision remains \(permit\) and usage is in progress.
-If a re-evaluation results into a \(deny\) decision or if the subject ends their usage, then the session moves to the exit state, or to the \(post\) state where \(post\) rules are evaluated and the corresponding obligations are enforced.
+If a re-evaluation results into a \(deny\) decision or if the subject ends their usage, then the session terminates, or otherwise it moves to the \(post\) phase where \(post\) rules are evaluated and the corresponding obligations are enforced.
 Unlike \cite{zhang2005formal} and \cite{katt2008general}, in this view of the state model we do not consider usage requests and policy evaluations as systems states.
-Instead, we view them as atomic actions that trigger transitions among the \(pre\), \(ongoing\) and \(post\) states, because transitions occur due to the decisions that are determined by policy evaluations. 
+Instead, we view them as atomic actions that trigger transitions among the \(pre\), \(ongoing\) and \(post\) phases, because transitions occur due to the decisions that are determined by policy evaluations. 
 
 \begin{figure}[!htb]
 	\centering
@@ -132,13 +133,13 @@ Instead, we view them as atomic actions that trigger transitions among the \(pre
 	\centering
 \end{figure}
 
-In \cite{ucs2020plus}, our team argues that denying access does not necessarily require terminating the authorisation process, but rather keep monitoring the state and re-evaluating when a change occurs.
+In \cite{ucs2020plus}, our team argues that denying access does not necessarily require terminating the authorisation process, but rather keep monitoring the session and re-evaluating when a change occurs.
 This is essential for use-cases that require a safe revocation of access before aborting the authorisation session, or in use-cases that allow multiple attempts to obtain or maintain access such as collaborative, multi-modal or behavioural authentication.
 For this reason, \acrshort{ucsp} sessions were extended to cover continuous monitoring when the evaluation decision is \(indeterminate\) (i.e., a decision cannot be made due to missing information or other reasons).
 This was achieved using an internal counter attribute that is incremented every time a re-evaluation is performed.
 The counter is also used in the default deny rule such that the default rule is not applicable as long as the counter is below a specific threshold.
 Therefore, if access cannot be granted, \acrshort{ucsp} keeps monitoring the session and re-evaluating policies until the counter expires. 
-The resulting state model is an extension to the one described in Figure \ref{fig:ucon_cnr_state_model}, where local state transitions are added to the \(pre\), \(ongoing\) and \(post\) states.
+The resulting state model is an extension to the one described in Figure \ref{fig:ucon_cnr_state_model}, where local state transitions are added to the \(pre\), \(ongoing\) and \(post\) phases.
 The state model of \acrshort{ucsp} is shown in Figure 
 
 \begin{figure}[!htb]
