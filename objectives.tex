@@ -1,7 +1,7 @@
 \section{Research Challenges and Objectives}\label{sec:objectives}
-In this section we describe our research objectives, which intend to address session management issues in \gls{ucon}.
-We are particularly interested in the \acrshort{ucsp}, so our work is based on this particular implementation of \gls{ucon}.
-We categorise our objectives as foundational and architectural, where foundational objectives aim at addressing fundamental issues at the model level, while the purpose of the architectural objectives is to solve framework problems as well as use-cases.
+In this section we describe our research objectives, which intend to address session and state management issues in \gls{ucon}.
+We are particularly interested in \acrshort{ucsp}, so our work is based on this particular implementation of \gls{ucon}.
+We categorise our objectives as foundational and architectural, where foundational objectives aim at addressing fundamental issues at the model level, while the purpose of the architectural objectives is solving framework problems as well as use-cases.
 
 \subsection{Foundational}\label{sec:foundational}
 \subsubsection{Continuity of \(pre\) and \(post\) Phases}
@@ -12,12 +12,18 @@ Firstly, in order to add continuity to the \(pre\) and \(post\) phases, the poli
 This causes a security risk because an the policy language standard does not define how the \(indeterminate\) decision should be treated and leaves such decision to the enforcement point.
 For this reason, we argue that the continuity of these phases must be enabled even when access is denied.
 
-Secondly, the counter was added to allow re-evaluations of specific attributes or changes such as trust level or user behaviour.
-However, the counter may expire due to updates of other attributes before capturing the changes of interest (e.g. behavioural changes).
+Secondly, the counter was added to allow re-evaluations of specific attributes or specific changes such as trust level or user behaviour.
+However, the counter may expire due to updates of other attributes before capturing the changes of interest.
 This is likely to happen in inconstant environments such as \gls{iot} or \gls{iov} where attribute values change frequently.
-Therefore, we intend to support this continuity in the state model itself.
+Therefore, the continuity of the \(pre\) and \(post\) phases must supported in the state model rather than the implementation.
 
-Thirdly, 
+Thirdly, continuity of \(pre\) and \(post\) phases is not necessarily ideal for all use-cases, as there may be cases where usage sessions must be terminated upon denial.
+For instance, an enterprise may block employee access to its resources out of working hours, so usage sessions must be denied and terminated immediately in such cases.
+Therefore, multiple flavours of \gls{ucon} must be available, each with a state model that supports relevant use-cases.
+
+One of the objectives of our research is to address the three aforementioned issues.
+We intend to support the continuity of \(pre\) and \(post\) phases if the evaluation decision is \(deny\), and we intend to support this in the state model itself.
+Moreover, we plan to define multiple state models that fit different use-cases, and to allow \gls{ucsp} to dynamically select the suitable state model based on the configuration or on the application.
 
 
 \subsubsection{Additional Classifications}
