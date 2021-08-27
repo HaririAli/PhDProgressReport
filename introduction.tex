@@ -1,21 +1,22 @@
 \section{Introduction}\label{sec:introduction}
 The rise of the ubiquitous Internet (e.g., smartphones, smart wearables, IoT devices, social networks, etc.) enabled the generation, collection and processing of huge amounts of personal data such as location, health records, user behaviour and video feeds \cite{iotdata}.
-As a result, data security and user privacy have become major concerns fueled by the abuse of personal data and by privacy-related incidents such as the Cambridge Analytica scandal \cite{davies2015ted}.
+As a result, data security and user privacy have become major concerns fueled by privacy-related incidents such as the Cambridge Analytica scandal \cite{davies2015ted}.
 Privacy laws and regulations, such as the \gls{gdpr} \cite{gdpr}, have been introduced to address these concerns.
 Moreover, many initiatives such as GAIA-X and \gls{idsa} \cite{eudigitalsov} have been launched with the objective of controlling data access and usage, enforcing policies, guaranteeing compliance with regulations, and ensuring that digital systems are privacy-preserving.
 Such initiatives rely on \gls{iam} solutions, which have become more prevalent as access control and privacy requirements become more complex and resources get distributed across increasingly heterogeneous environments.
 
-\gls{iam} is the management of the digital representations of real-world entities (e.g., people, organisations, objects, software, etc.) and its association and orchestration with authentication and authorisation solutions that ensure that only authorised entities get access to data and resources \cite{vallois2021blockchain} \cite{chadwick2009federated}.
-Digital identities have evolved from centralised identity to federated identity, and most recently to the emerging \gls{ssi} \cite{sovrin2016inevitable}.
-Centralised identity have been used in the majority of web services such as social networks or eCommerce, where each service has its own \gls{iam} system and its own database of identities.
-federated identity was introduced to address the accelerated growth of users and services as it allows the use of the same digital identity across different IT systems in heterogeneous environments within the same federation (e.g., enterprise, organisation, etc.).
-It also allows digital identities to be ported between different federations according to established trust relationships \cite{sovrin2016inevitable}\cite{xu2020identity}\cite{shim2005fim}.
-Both federated and centralised identities are fully controlled by organisations rather than the identity owners, which raised privacy concerns.
-For this reason, \gls{ssi} emerged to give identity owners full control over their digital identities, removing the centralised and external control over identities and making identity owners independent of any organisations \cite{sovrin2016inevitable}.
-\gls{ssi} has been gaining a lot of attention and is being adopted in many initiatives such as GAIA-X and \gls{essif}.
-However, there are several problems that are yet to be solved in order to support a wide adoption of \gls{ssi}, especially since \gls{ssi} technologies are still immature, and because organisation have invested heavily in traditional identity management systems such as \gls{fim} or centralised identity.
+%\gls{iam} is the management of the digital representations of real-world entities (e.g., people, organisations, objects, software, etc.) and its association and orchestration with authentication and authorisation solutions that ensure that only authorised entities get access to data and resources \cite{vallois2021blockchain} \cite{chadwick2009federated}.
+%Digital identities have evolved from centralised identity to federated identity, and most recently to the emerging \gls{ssi} \cite{sovrin2016inevitable}.
+%Centralised identity have been used in the majority of web services such as social networks or eCommerce, where each service has its own \gls{iam} system and its own database of identities.
+%Federated identity was introduced to address the accelerated growth of users and services as it allows the use of the same digital identity across different IT systems in heterogeneous environments within the same federation (e.g., enterprise, organisation, etc.).
+%It also allows digital identities to be ported between different federations according to established trust relationships \cite{sovrin2016inevitable}\cite{xu2020identity}\cite{shim2005fim}.
+%Both federated and centralised identities are fully controlled by organisations rather than the identity owners, which raised privacy concerns.
+%For this reason, \gls{ssi} emerged to give identity owners full control over their digital identities, removing the centralised and external control over identities and making identity owners independent of any organisations \cite{sovrin2016inevitable}.
+%\gls{ssi} has been gaining a lot of attention and is being adopted in many initiatives such as GAIA-X and \gls{essif}.
+%However, there are several problems that are yet to be solved in order to support a wide adoption of \gls{ssi}, especially since \gls{ssi} technologies are still immature, and because organisation have invested heavily in traditional identity management systems such as \gls{fim} or centralised identity.
 
-Similarly, access control models have evolved over the years from \gls{mac} and \gls{dac} \cite{sandhu1993lattice} to the most prominent models, \gls{rbac} \cite{rbac1992nist} and \gls{abac} \cite{abac}.
+%Similarly,
+Access control models have evolved over the years from \gls{mac} and \gls{dac} \cite{sandhu1993lattice} to the most prominent models, \gls{rbac} \cite{rbac1992nist} and \gls{abac} \cite{abac}.
 \gls{rbac} associates permissions with roles that are assigned to subjects and represent job functions, competencies, authorities or responsibilities (e.g., employees are assigned roles such as ``manager'' or ``engineer'' and each role has different access rights) \cite{rbac1992nist}\cite{sandhu1996role}.
 \gls{abac} adds more flexibility and granularity by associating access rights with attributes about subjects (e.g., name, address, etc.), objects (e.g., file type, size, etc.) and the environment (e.g., time, location, etc.) \cite{abac}.
 \gls{capbac} is also another fine-grained access control model used in many systems, where access rights are assigned to subjects in the form of capabilities issued by an authorisation authority.
@@ -33,36 +34,3 @@ The corresponding research objectives are described in Section \ref{sec:objectiv
 We discuss the research progress and the future plan to complete the objectives in Section \ref{sec:progress}.
 In Section \ref{sec:publications}, we list the progress and plan for publications.
 Finally, we define future directions and draw conclusions in Section \ref{sec:conclusion}.
-
-%\gls{iam} is the management of the digital representations of real-world entities (e.g., people, organisations, objects, software, etc.) and its association and orchestration with authentication and authorisation solutions that ensure that only authorised entities get access to data and resources \cite{vallois2021blockchain} \cite{chadwick2009federated}.
-%Digital identities have evolved from centralised identity to federated identity, then to user-centric identity and most recently to the emerging \gls{ssi} \cite{sovrin2016inevitable}.
-%Centralised identity have been used in the majority of Internet and web services such as social networks or eCommerce services.
-%In such systems, digital identities are completely under the control of a single entity, which is the service provider.
-% This led to scalability issues as such systems could not handle the accelerating growth of users and variety of services, giving rise to \gls{fim} that allows the use of the same identity to access different IT resources in heterogeneous environments within the same federation (e.g., enterprise, organisation, etc.).
-%\gls{fim} also allows digital identities to be ported between different federations according to established trust relationships \cite{sovrin2016inevitable}\cite{xu2020identity}\cite{shim2005fim}.
-%Both federated and centralised identity are fully controlled by organisations rather than the identity owners, which is why user-centric identity was introduced as it allows identity owners to control and authorise when and how to disclose their identity information.
-%However, user-centric identity cannot enable owner to fully control and manage their digital identities because identity information is still physically stored and managed by organisations \cite{sovrin2016inevitable}\cite{xu2020identity}.
-%\gls{ssi} emerged to give identity owners full control over their digital identities and to provide security and portability of digital identities.
-%This removes the centralised and external control over identities and make identity owners independent of any organisations \cite{sovrin2016inevitable}.
-%\gls{ssi} have been gaining a lot of attention and is being adopted in many initiatives such as GAIA-X and \gls{essif}.
-%However, there are several problems that are yet to be solved in order to support a wide adoption of \gls{ssi}.
-%This is because \gls{ssi} technologies are still immature, and because organisation have invested heavily in traditional identity management systems such as \gls{fim} or centralised identity.
-
-%Similarly, access control models have evolved over the years from \gls{mac} and \gls{dac} \cite{sandhu1993lattice} to the most prominent models, \gls{rbac} \cite{rbac1992nist} and \gls{abac} \cite{abac}.
-%\gls{rbac} associates permissions with roles that are assigned to subjects and represent job functions, competencies, authorities or responsibilities.
-%For instance, all employees that are assigned the role “manager” have all access rights associated with that role \cite{rbac1992nist}\cite{sandhu1996role}.
-%\gls{abac} adds more flexibility and granularity over other models by associating access rights with attributes about the subject (e.g., name, address, etc.), the resources (e.g., file type, size, etc.) and the environment (e.g., time, location, etc.) \cite{abac}.
-%\gls{capbac} is also another fine-grained access control model used in many systems, where access rights are assigned to subjects in the form of capabilities issued by an authorisation authority.
-%Capabilities are typically issued by a \gls{sts} as short-lived tokens that are then presented by the subject to the resource provider which verifies the token and grants or denies access according to the embedded capabilities \cite{fang2005xpola}. 
-%The aforementioned access control models assume that roles/attributes/capabilities, and consequently access rights, do not change during access/usage of resources.
-%As such, they are considered static access control models that do not react to situation changes, which is a limitation especially in today's dynamic systems such as \gls{iot} or \gls{iov}.
-%For this reason, J. Park and R. Sandhu \cite{ucon} proposed the \gls{ucon} model that extends \gls{abac} with mutability of attributes and continuity of access control.
-%This is achieved by the continuous monitoring or attributes and by re-evaluating policies when a change occurs.
-%To realise the \gls{ucon} model, Lazouski et al. \cite{ucs2012prototype} defined a prototype and a policy model based on the \gls{xacml} standard.
-%Researchers have thereafter developed and leveraged \gls{ucon} to address different use-cases and applications such as \cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}.
-%We also extended \gls{ucon} with the \gls{adp} in \cite{datapal}.
-%We used the \gls{adp} to introduce a new policy model that supports user consent and intervenability by allowing data owners to define data-centric policies enforced at every step of the data lifecycle (i.e., collection, retention, treatment and deletion).
-
-%Although \gls{ucon} extended access control with session-based and stateful evaluation and monitoring, it still has some limitations and cannot accommodate some emerging use-cases such as data flow control.
-%Therefore, a generalisation of the \gls{ucon} model is needed to support applications that go beyond access control and to form the foundation for future session-based stateful policy-based systems.
-%In this report, we outline the state of the state of the art of this research, then we discuss the research problems and our objectives as well as the research progress and plan.
