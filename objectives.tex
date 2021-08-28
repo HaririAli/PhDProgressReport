@@ -6,30 +6,39 @@ We categorise our objectives as foundational and architectural, where foundation
 \subsection{Foundational}\label{sec:foundational}
 \subsubsection{Continuity of \(pre\) and \(post\) Phases}
 As described in Section \ref{sec:state_model}, our team added continuity to the \(pre\) and \(post\) phases by adding an internal counter of re-evaluations and by keeping the session alive as long as the decision is not \(deny\) and as long as the counter is below a defined threshold
-We argue that this was an engineering solution addressing a fundamental issue that must be solved at a model level.
-
-Firstly, in order to add continuity to the \(pre\) and \(post\) phases, the policies have to be intentionally written in a way that results in an \(indeterminate\) decision as long as the counter has not expired.
-This causes a security risk because an the policy language standard does not define how the \(indeterminate\) decision should be treated and leaves such decision to the enforcement point.
-For this reason, we argue that the continuity of these phases must be enabled even when access is denied.
-
+This solution is not optimal and it overlooks some fundamental issues that must be addressed at the model level. 
+Firstly, policies have to be intentionally written in a way that results in an \(indeterminate\) decision as long as the counter has not expired.
+This causes a security risk because the policy language standard does not define how the \(indeterminate\) decision should be treated and leaves such decision to the enforcement point.
+For this reason, continuity of these phases must be enabled even when access is denied.
 Secondly, the counter was added to allow re-evaluations of specific attributes or specific changes such as trust level or user behaviour.
 However, the counter may expire due to updates of other attributes before capturing the changes of interest.
 This is likely to happen in inconstant environments such as \gls{iot} or \gls{iov} where attribute values change frequently.
-Therefore, the continuity of the \(pre\) and \(post\) phases must supported in the state model rather than the implementation.
-
+%Therefore, the continuity of the \(pre\) and \(post\) phases must be supported in the state model rather than the implementation.
 Thirdly, continuity of \(pre\) and \(post\) phases is not necessarily ideal for all use-cases, as there may be cases where usage sessions must be terminated upon denial.
 For instance, an enterprise may block employee access to its resources out of working hours, so usage sessions must be denied and terminated immediately in such cases.
-Therefore, multiple flavours of \gls{ucon} must be available, each with a state model that supports relevant use-cases.
-
-One of the objectives of our research is to address the three aforementioned issues.
-We intend to support the continuity of \(pre\) and \(post\) phases if the evaluation decision is \(deny\), and we intend to support this in the state model itself.
+%Therefore, multiple flavours of \gls{ucon} must be available, each with a state model that supports relevant use-cases.
+%One of the objectives of our research is to address the three aforementioned issues.
+Accordingly, we intend to support the continuity of \(pre\) and \(post\) phases even when the evaluation decision is \(deny\), and we intend to support this in the state model.
 Moreover, we plan to define multiple state models that fit different use-cases, and to allow \gls{ucsp} to dynamically select the suitable state model based on the configuration or on the application.
 
 
 \subsubsection{Additional Classifications}
-The need for additional stages
+Our team's extension of \gls{ucsp} state model in \cite{ucs2020plus} allows the session to stay in the \(ongoing\) phase when the decision is \(indeterminate\) in order to put the authorisation on hold until further information is collected or until behavioural changes are detected.
+This changes the semantics of the original \gls{ucon} model, because the \(ongoing\) phase was intended to represent a granted access in progress only.
+An alternative solution would be to go back from \(ongoing\) to \(pre\), but this too changes the semantics of the original model because the \(pre\) phase refers to interactions that happen before the start of usage.
+For this reason, we believe that an additional phase is needed in order to represent such cases where the session is still alive but access is suspended or on hold.
+More importantly, while the \(pre\), \(ongoing\) and \(post\) (and perhaps \(suspended\)) phases are enough to manage the lifecycle of continuous access control, they are not sufficient for more complex applications like data flow control and process control.
+This is because such complex use-cases include multiple and different phases in their lifecycles (e.g., the phases of data flow control are data collection, retention, treatment, transfer and deletion).
+Therefore, one of our objectives is to support user-defined \gls{ucon} phases such that \acrshort{uscp} can be configured depending on the use-case.
 
 \subsubsection{Generalised Session-Based \gls{abac} Model}
+To formalise the extensions proposed in the previous two sections, we plan to propose a generalisation of the \gls{ucon} model such that authorisations are always continuous and can be classified into any number of user-defined phases.
+The resulting model would be a generalised session-based \gls{abac} model, where decisions are based on attributes and sessions can be split into multiple phases in which different policies are effected.
+In addition, the model should allow sessions to be structured in a hierarchy or to be correlated with each other and share contexts.
+We plan to provide the conceptual definitions of such model as well as the mathematical formalism.
+%Moreover, the model may be further generalised into a generic policy-based decision making model where decisions are not binary anymore (i.e., \(permit\)/\(deny\)), but rather can be any type of outcome such as actions or selections. 
+%However, this is a long term goal that is out of the scope of the current research. 
+
 
 \subsection{Architectural}\label{sec:architectural}
-Distributed ucs
+Our architectural objectives are concerned with different deployments and applications of \gls{uscp} according to different use-cases.
