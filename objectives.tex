@@ -29,7 +29,7 @@ An alternative solution would be to go back from \(ongoing\) to \(pre\), but thi
 For this reason, we believe that an additional phase is needed in order to represent such cases where the session is still alive but access is suspended or on hold.
 More importantly, while the \(pre\), \(ongoing\) and \(post\) (and perhaps \(suspended\)) phases are enough to manage the lifecycle of continuous access control, they are not sufficient for more complex applications like data flow control and process control.
 This is because such complex use-cases include multiple and different phases in their lifecycles (e.g., the phases of data flow control are data collection, retention, treatment, transfer and deletion).
-Therefore, one of our objectives is to support user-defined \gls{ucon} phases such that \acrshort{uscp} can be configured depending on the use-case.
+Therefore, one of our objectives is to support user-defined \gls{ucon} phases such that \acrshort{ucsp} can be configured depending on the use-case.
 
 \subsubsection{Generalised Session-Based \gls{abac} Model}
 To formalise the extensions proposed in the previous two sections, we plan to propose a generalisation of the \gls{ucon} model such that authorisations are always continuous and can be classified into any number of user-defined phases.
@@ -41,4 +41,5 @@ We plan to provide the conceptual definitions of such model as well as the mathe
 
 
 \subsection{Architectural}\label{sec:architectural}
-Our architectural objectives are concerned with different deployments and applications of \gls{uscp} according to different use-cases.
+Our architectural objectives are concerned with different deployments and applications of \acrshort{ucsp} according to different use-cases.
+One 
