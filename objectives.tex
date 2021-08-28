@@ -42,4 +42,13 @@ We plan to provide the conceptual definitions of such model as well as the mathe
 
 \subsection{Architectural}\label{sec:architectural}
 Our architectural objectives are concerned with different deployments and applications of \acrshort{ucsp} according to different use-cases.
-One 
+Distribution of \acrshort{ucsp} and proper distributed session management are among our architectural objectives.
+We aim to analyse different distributed architectures for cloud and \gls{iot} environments and to study possible approaches of session management.
+A more important objective is to adopt the principles of \gls{ucon} (i.e., policy-based decision making, session-based continuous monitoring, as well as policy re-evaluation and revision) in identity and privilege management use-cases. 
+This allows the contextualisation and management of the lifecycle of privileges and identities and to adapt them to changing situations and environmental conditions.
+Such policy-based and context-aware identity and privilege management is favourable in use-cases such as \gls{iot} and \gls{iov} where situational changes are frequent.
+Moreover, the GAIA-X \gls{iam} specification \cite{gaiax2021iam} defines that identity providers must support both federated identities and \glspl{ssi}.
+However, \gls{ssi} technologies are still immature and organisations have invested heavily in federated identities.
+In addition, there interoperability problems that must be solved in order for \gls{ssi} technologies to coexist with each other and with federated identities.
+Policy-based identity and privilege management can solve such problems by providing an automated verification, issuance and exchange of identity credentials between different trust domains that use different identity technologies such as \gls{ssi} or federated identity.
+Therefore, we plan to introduce a policy-based \gls{iam} middleware that complies with GAIA-X specification and supports the interoperability between identity technologies.
