@@ -4,7 +4,7 @@ We are particularly interested in \acrshort{ucsp}, so our work is based on this 
 We categorise our objectives as foundational and architectural, where foundational objectives aim at addressing fundamental issues at the model level, while the purpose of the architectural objectives is solving framework problems as well as use-cases.
 
 \subsection{Foundational}\label{sec:foundational}
-\subsubsection{Continuity of \(pre\) and \(post\) Phases}
+\subsubsection{Continuity of \(pre\) and \(post\) Phases}\label{sec:transitions}
 As described in Section \ref{sec:state_model}, our team added continuity to the \(pre\) and \(post\) phases by adding an internal counter of re-evaluations and by keeping the session alive as long as the decision is not \(deny\) and as long as the counter is below a defined threshold
 This solution is not optimal and it overlooks some fundamental issues that must be addressed at the model level. 
 Firstly, policies have to be intentionally written in a way that results in an \(indeterminate\) decision as long as the counter has not expired.
@@ -22,7 +22,7 @@ Accordingly, we intend to support the continuity of \(pre\) and \(post\) phases 
 Moreover, we plan to define multiple state models that fit different use-cases, and to allow \gls{ucsp} to dynamically select the suitable state model based on the configuration or on the application.
 
 
-\subsubsection{Additional Classifications}
+\subsubsection{Additional Classifications}\label{sec:phases}
 Our team's extension of \gls{ucsp} state model in \cite{ucs2020plus} allows the session to stay in the \(ongoing\) phase when the decision is \(indeterminate\) in order to put the authorisation on hold until further information is collected or until behavioural changes are detected.
 This changes the semantics of the original \gls{ucon} model, because the \(ongoing\) phase was intended to represent a granted access in progress only.
 An alternative solution would be to go back from \(ongoing\) to \(pre\), but this too changes the semantics of the original model because the \(pre\) phase refers to interactions that happen before the start of usage.
@@ -31,7 +31,7 @@ More importantly, while the \(pre\), \(ongoing\) and \(post\) (and perhaps \(sus
 This is because such complex use-cases include multiple and different phases in their lifecycles (e.g., the phases of data flow control are data collection, retention, treatment, transfer and deletion).
 Therefore, one of our objectives is to support user-defined \gls{ucon} phases such that \acrshort{ucsp} can be configured depending on the use-case.
 
-\subsubsection{Generalised Session-Based \gls{abac} Model}
+\subsubsection{Generalised Session-Based \gls{abac} Model}\label{sec:generalisation}
 To formalise the extensions proposed in the previous two sections, we plan to propose a generalisation of the \gls{ucon} model such that authorisations are always continuous and can be classified into any number of user-defined phases.
 The resulting model would be a generalised session-based \gls{abac} model, where decisions are based on attributes and sessions can be split into multiple phases in which different policies are effected.
 In addition, the model should allow sessions to be structured in a hierarchy or to be correlated with each other and share contexts.

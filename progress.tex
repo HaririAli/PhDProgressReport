@@ -1,2 +1,69 @@
 \section{Research Progress and Plan}\label{sec:progress}
+This section describes the progress of our research and the plan towards achieving the objectives outlined in Section \ref{sec:background}.
+
+\subsection{Transitions and Continuity of \acrshort{ucp} Phases}
+As discussed in Section \ref{sec:transitions}, the state model of \acrshort{ucsp} is restrictive and cannot fit all use-cases.
+For this reason, \acrshort{ucsp} must be extended to support multiple state models such that it dynamically selects the suitable model.
+A state model for \gls{ucon} can be represented as a \gls{dfa} as follows:
+\[M = (Q,\Sigma,\delta,q_0,F)\]
+where:
+\begin{itemize}
+	\item \(Q\) is the set of phases: \(Q := {init, pre, ongoing, post, finish}\);
+	\item $\Sigma$ is the set of evaluation decisions representing the inputs of the \gls{dfa}: \(\Sigma := {deny, permit, indeterminate, inapplicable}\);
+	\item \(\delta\) is the transition function: \(\delta:Q\times\Sigma \rightarrow Q\);
+	\item \(q_0\) is the initial state \(q_0 := init\); and
+	\item \(F\) is the set of exit states.
+\end{itemize}
+
+
+
+The same \acrshort{ucsp} node may handle different use-cases that require different state models, thus the state model must be selected per usage session rather than per \acrshort{ucsp} node.
+As aforementioned, \acrshort{ucsp} uses \gls{alfa} policy language which conforms to hierarchy of policy sets, policies and rules where combining algorithms are used to resolve conflicts when multiple policy sets, policies or rules are applicable.
+However, top-level policy sets (i.e., not nested under any other policy sets) are not selected or combined by combining algorithms.
+Instead, \acrshort{ucsp} assumes that top-level policy sets are mutually exclusive, so for each usage request,  \acrshort{ucsp} selects one and only one top-level policy set and associates it with the corresponding usage session.
+%This means that only policy sets and policies that are nested under the selected top-level policy set will be evaluated throughout the lifecycle of the usage session.
+%One approach to enable selecting state models per usage sessions is to define state transitions in policies. 
+%However, such approach allows usage sessions to change their state models while they are in progress because different policies may be re-evaluated depending on attribute updates and each policy may be associated with a different state model.
+%In addition, if the state models are conflicting, then a selection mechanism would be needed in order to resolve conflicts.
+%Allowing usage sessions may be appropriate for some use-cases, but it requires further analysis and careful study.
+Accordingly, we propose associating state models with top-level policy sets as this allows usage sessions to have different state models if they are associated with different top-level policy sets.
+We also propose the use of a policy language or a rule-based system in order to decide how to transition between phases based on the current phase and on the evaluation decision \gls{alfa} policies (i.e.,\(permit\), \(deny\), \(indeterminate\) or \(inapplicable\)).
+Therefore, when an attribute value changes and policies are re-evaluated, \acrshort{ucsp} also checks the transition rules and changes the phase of the session accordingly.
+One way to express transitions between phases is using \gls{alfa} policy language such that the current phase and the evaluation decision are considered attributes, and the transition to the next phases is defined as an obligation.
+An example transitions policy is shown in Listing \ref{lst:transitions}.
+The target clause of the policy defines that the policy is applicable when the session is in the \(pre\) phase.
+The target clause of first rule states that the rule must be selected if the evaluation decision is \(permit\), and the obligation states that the phase must be updated to \(ongoing\).
+Similarly, the second rule specifies that the session must move to the end state (i.e., terminated) if the evaluation decision is \(inapplicable\).
+In both cases, the \texttt{permit} effect is not considered because this policy is not used for access control decision, but rather to decide how to transition among \gls{ucon} phases.
+Since \gls{alfa} is an access control policy language, it may not be the best language for defining transitions, so we plan to explore Drools \cite{drools}, a rule engine that enables users to define actions to be defined based on conditions.
+\gls{alfa} may have an advantage over \gls{drl} because \acrshort{ucsp} already incorporates an \gls{alfa} policy engine so no extra implementation is required.
+Nevertheless, we will soon provide a comparison between the two languages and use one of them as language for defining and selecting state models, which will be the next and final step of this part of our research.
+
+
+\begin{lstlisting}[float=!tbh, caption={An example of defining phase transitions in ALFA},label={lst:transitions}]
+	policy pre-transitions {
+		target clause Attributes.ucs.phase == ''pre''
+		apply firstApplicable
+		rule permit {
+			target clause Attributes.ucs.decision == ''permit''
+			permit
+			on permit {
+				obligation to-ongoing {
+					Attributes.ucs.phase = "ongoing"
+				}
+			}
+		}
+		rule inapplicable {
+			target clause Attributes.ucs.decision == ''inapplicable''
+			permit
+			on permit {
+				obligation to-ongoing {
+					Attributes.ucs.phase = "end"
+				}
+			}
+		}
+	};
+\end{lstlisting}
+
+
 In \cite{siuv}
