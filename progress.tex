@@ -208,7 +208,7 @@ The \gls{vdr} may also be used to store other relevant information like metadata
 \texttt{The \gls{sts}} is the core component that provides dynamic identity and privilege management of subjects.
 
 \texttt{Localised \acrshort{ucsp} nodes} are used to protect resources such as domain controllers or \glspl{ecu}.
-Localised \acrshort{ucsp} nodes make usage decisions based on the localised context and resource attributes as well as privileges issued by the \gls{sts}.
+They make usage decisions based on the localised context and resource attributes as well as privileges issued by the \gls{sts}.
 Thus, the \gls{sts} handles the global context of the whole vehicle, while localised \acrshort{ucsp} nodes manage localised authorisation contexts of individual components.
 
 \subsubsection{GAIA-X \gls{iam}} \label{sec:gaiax}
@@ -217,3 +217,68 @@ The middleware can also be used by GAIA-X participants as a service to delegate 
 The policy-based evaluation and the continuous monitoring allows the middleware to react to contextual and situational changes and to update the issued credentials accordingly.
 This part of the research is currently in progress and results should be available soon.
 We are studying the different identity technologies that must be supported in GAIA-X as well as the interoperability issues and the different verification mechanisms.
+
+\subsection{State and Session Management in Distributed \acrshort{ucsp}}\label{sec:disrtibution}
+In this section we introduce two architectures for clustering \acrshort{ucsp} nodes and we discuss the corresponding session management.
+The objective is to allow a cluster of \acrshort{ucsp} nodes to work together and cooperate for handling in large number of usage sessions in cloud or enterprise environments.
+\acrshort{ucsp} in this case would be provided as a microservice behind a \gls{gw} where the load of session management and policy evaluation is shared among multiple nodes.
+The two architectures are designated as Stateful-Node Architecture and Stateless-Node Architecture and are described in the next subsections.
+In both architectures, a \gls{pap} service is used to store and manage policies, and attribute retrievers are used to collect attribute values.
+We also introduce three new components as follows:
+\begin{itemize}
+	\item \gls{srp}: A database that stores and persists information about all sessions within the cluster. It can be a centralised database or a distributed storage such as a \gls{dht}. This component is used to recreate sessions and resume them in case of failures.
+	\item \gls{acp}: A cache of attribute values used to speed up the retrieval of attributes during policy evaluation. Like the \gls{srp}, the \gls{acp} can be a centralised or decentralised cache.
+	\item \gls{pmp}: a component that keeps a mapping between attributes and usage sessions in order to invoke re-evaluations in the affected sessions when an attribute update occurs.
+\end{itemize}
+We are currently in the process of implementing the two architectures and evaluating them, so more details will be available soon.
+This work is focused on cloud and enterprise environments, but we plan in future iterations to explore distribution and session management in \gls{iot} and \gls{iov} applications, where computing resources are limited and access to information (e.g., attributes) is challenging.
+
+\subsubsection{Stateful-Node Architecture}
+In this architecture, a cluster of \acrshort{ucsp} nodes handle different sessions.
+Each node incorporates a \gls{pmp} and handles at least one session.
+The full lifecycle of a single usage session is handled by one and only one node, so the nodes can be considered to be stateful.
+\acrshort{ucsp} nodes update the \gls{srp} upon re-evaluations of sessions in order to persist all session data.
+They also communicate with attribute retrievers to collect attribute values and cache them in the \gls{acp} as shown in Figure \ref{fig:stateful}.
+
+Since sessions are associated with particular \acrshort{ucsp} nodes, a recovery mechanism must be employed to restore and resume sessions after a failure.
+One possible solution is to introduce a health chck service that monitors \acrshort{ucsp} nodes and reassigns sessions to new nodes when a failure occurs.
+During the time period between failure of a \acrshort{ucsp} node and the reassignment of its sessions, some attribute values may change.
+Thus, when a session is reassigned to a new node, the node must re-evaluate the corresponding policies and update the session information in the \gls{srp}.
+ 
+This architecture improves the performance of the overall lifecycle of the session since the session object is created only once and handled in memory in the node.
+The architecture is also scalable because additional \acrshort{ucsp} nodes can be easily added to the cluster.
+However, resources may be wasted in this architecture because \acrshort{ucsp} nodes are always kept active even if no re-evaluations are invoked.
+Moreover, some sessions may use attributes that are updated frequently while other sessions remain idle for long periods of time.
+Thus, load balancing is difficult in this architecture because we cannot know in advance which sessions will be active, so some \acrshort{ucsp} nodes may end up being busy while others remain idle.
+Accordingly, this architecture is ideal for use-cases where all attributes change very frequently, because nodes will be fully utilised. 
+In addition, sessions would already be loaded in \acrshort{ucsp} nodes so there is no overhead of loading sessions every time a re-evaluation is invoked.
+
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{figures/stateful.png}
+	\caption{Stateful-node architecture}
+	\label{fig:stateful}
+\end{figure}
+
+\subsubsection{Stateless-Node Architecture}
+The stateless-node architecture is shown in Figure \ref{fig:stateless} where a cluster of \glspl{pmp} monitor and keep track of all sessions.
+On the other hand, \acrshort{ucsp} nodes handle evaluations only rather than handling full lifecycles of usage sessions.
+Specifically, when a usage request is created or when an attribute is updated, a \gls{pmp} queues and evaluation job, and one \acrshort{ucsp} node picks the job, loads session information from the \gls{srp} then evaluates policies and updates the session information.
+Therefore, the lifecycle of a usage session may be handled by multiple \acrshort{ucsp} nodes.
+
+The \gls{pmp} cluster is vital in this architecture because it keeps track of all sessions within the system.
+To allow scalability and avoid failures, \glspl{pmp} can act as backups for one another and each \gls{pmp} can track a subset of sessions only.
+Thus, if a \gls{pmp} fails, its backup can keep monitoring the corresponding sessions until another \gls{pmp} is up.
+Furthermore, when a \gls{pmp} queues an evaluation job, it can keep checking for a response, so that if the \acrshort{ucsp} node that picked the job fails before completing the evaluation, the \gls{pmp} can time out and assign the job to another \acrshort{ucsp} node.
+This makes the cluster highly resilient as it can mitigate failures quickly and easily.
+In addition, resource utilisation in this architecture is high, an load can be properly distributed and balanced, because \acrshort{ucsp} nodes are invoked when needed.
+However, this architecture introduces a performance overhead of loading sessions from storage every time a re-evaluation is invoked.
+Accordingly, this architecture is ideal for use-cases in which attributes do not change very frequently as this eliminates the overhead of loading sessions many times.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{figures/stateless.png}
+	\caption{Stateless-node architecture}
+	\label{fig:stateless}
+\end{figure}
