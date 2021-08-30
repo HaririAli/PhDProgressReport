@@ -16,7 +16,7 @@ Such initiatives rely on \gls{iam} solutions, which have become more prevalent a
 %However, there are several problems that are yet to be solved in order to support a wide adoption of \gls{ssi}, especially since \gls{ssi} technologies are still immature, and because organisation have invested heavily in traditional identity management systems such as \gls{fim} or centralised identity.
 
 %Similarly,
-Access control models have evolved over the years from \gls{mac} and \gls{dac} \cite{sandhu1993lattice} to the most prominent models, \gls{rbac} \cite{rbac1992nist} and \gls{abac} \cite{abac}.
+Access control models have evolved over the years from \gls{mac} and \gls{dac} \cite{sandhu1993lattice} to the most prominent models, namely \gls{rbac} \cite{rbac1992nist} and \gls{abac} \cite{abac}.
 \gls{rbac} associates permissions with roles that are assigned to subjects and represent job functions, competencies, authorities or responsibilities (e.g., employees are assigned roles such as ``manager'' or ``engineer'' and each role has different access rights) \cite{rbac1992nist}\cite{sandhu1996role}.
 \gls{abac} adds more flexibility and granularity by associating access rights with attributes about subjects (e.g., name, address, etc.), objects (e.g., file type, size, etc.) and the environment (e.g., time, location, etc.) \cite{abac}.
 \gls{capbac} is also another fine-grained access control model used in many systems, where access rights are assigned to subjects in the form of capabilities issued by an authorisation authority.
@@ -25,12 +25,12 @@ The aforementioned access control models assume that roles/attributes/capabiliti
 For this reason, J. Park and R. Sandhu \cite{ucon} proposed the \gls{ucon} model that extends \gls{abac} with mutability of attributes and monitoring of attribute values as well as continuity of access control and policy re-evaluation.
 \gls{ucon} gained a lot of attention and many researchers have extended and leveraged it to address different use-cases and applications \cite{ucs2016cloudsys}\cite{ucs2017iot}\cite{ucs2017mqtt}\cite{pretschner2011dataucon}.
 We also extended \gls{ucon} with the \gls{adp} in \cite{datapal} in order to introduce a new policy model that supports user consent and intervenability by allowing data owners to define data-centric policies enforced at every step of the data lifecycle (i.e., collection, retention, treatment and deletion).
-Although \gls{ucon} extended access control with session-based evaluation and monitoring, and despite the significant works that extended the model and developed it, some limitations still need to be addressed in order to accommodate some emerging use-cases such as data flow control.
-In this report, we outline the state of the state of the art of \gls{ucon}, then we discuss the related research problems and our objectives as well as the research progress and plan.
+Although \gls{ucon} extended access control with session-based evaluation and monitoring, and despite the significant works that extended and developed the model, some limitations still need to be addressed to accommodate some emerging use-cases.
+In this report, we outline the state of the art of \gls{ucon}, then we discuss the related research problems and objectives as well as the research progress and plan.
 
-The rest of the report of organised as follows:
-Section \ref{sec:background} outlines the state of the art and the research problems.
-The corresponding research objectives are described in Section \ref{sec:objectives}.
+The rest of the report is organised as follows:
+Section \ref{sec:background} outlines the state of the art.
+The research problems and objectives are described in Section \ref{sec:objectives}.
 We discuss the research progress and the future plan to complete the objectives in Section \ref{sec:progress}.
 In Section \ref{sec:publications}, we list the progress and plan for publications.
 Finally, we define future directions and draw conclusions in Section \ref{sec:conclusion}.

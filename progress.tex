@@ -1,7 +1,7 @@
 \section{Research Progress and Plan}\label{sec:progress}
 This section describes the progress of our research and the plan towards achieving the objectives outlined in Section \ref{sec:background}.
 
-\subsection{Transitions and Continuity of \acrshort{ucsp} Phases}
+\subsection{Transitions and Continuity of \acrshort{ucsp} Phases}\label{sec:dynamic_dfas}
 As discussed in Section \ref{sec:transitions}, the state model of \acrshort{ucsp} is restrictive and cannot fit all use-cases.
 For this reason, \acrshort{ucsp} must be extended to support multiple state models such that it dynamically selects the suitable model.
 A state model for \gls{ucon} can be represented as a \gls{dfa} as follows:
@@ -17,26 +17,26 @@ where:
 \smallskip
 
 The only element that differentiates \gls{ucon} state models from each other is the transition function \(\delta\).
-Accordingly, we outline the following possible \gls{ucon} state transition functions for each phase depending on the evaluation decision:
+Accordingly, we outline the following possible \gls{ucon} state transitions for each phase depending on the evaluation decision:
 \begin{itemize}
-	\item \(pre\) phase:
+	\item transitions at the \(pre\) phase:
 	\begin{itemize}
-		\item \(inapplicable\) decision: This means that there are no policies that match the request. Thus, the usage session must be terminated in this case because re-evaluations will lead to the same decision unless the administrator installs a new policy that matches the request. Therefore, the usage session must move to the exit state in this case.
+		\item \(inapplicable\) decision: This means that there are no policies that match the request. Re-evaluations will lead to the same decision in this case unless the administrator installs a new policy that matches the request. Thus, the usage session must be terminated.
 		\item \(permit\) decision: Implies that access has been granted and usage will start right after, so the session must move to the \(ongoing\) phase in this case.
 		\item \(indterminate\): Must trigger one of the following two transitions:
 		\begin{itemize}
 			\item A transition to the exit state terminating the session; or
-			\item A local transition to the \(pre\) phase allowing the session to remain in \(pre\) and allow attribute updates or user behaviour changes to trigger re-revaluations. 
+			\item A local transition to the \(pre\) phase allowing attribute updates or user behaviour changes to trigger re-revaluations. 
 		\end{itemize}
 		\item \(deny\) decision: Must trigger one of the following two transitions:
 		\begin{itemize}
 			\item A transition to the exit state terminating the session; or
-			\item A local transition to the \(pre\) state allowing the session to remain in \(pre\) and allow attribute updates or user behaviour changes to trigger re-revaluations. 
+			\item A local transition to the \(pre\) state allowing attribute updates or user behaviour changes to trigger re-revaluations. 
 		\end{itemize}
 	\end{itemize}
-	\item \(ongoing\) phase:
+	\item transitions at the \(ongoing\) phase:
 	\begin{itemize}
-		\item \(inapplicable\) decision: This SHOULD NOT be possible in the \(ongoing\) phase. This is because \(ongoing\) implies that a policy has already been found and usage has started. However, if for some reason (e.g. system error), all matching policies were removed, and the evaluation resulted in \(inapplicable\), then the authorisation must move to the exit state. 
+		\item \(inapplicable\) decision: This SHOULD NOT be possible in the \(ongoing\) phase. This is because \(ongoing\) implies that a policy has already been found and usage has started. However, if for some reason (e.g., system error), all matching policies were removed, and the evaluation resulted in \(inapplicable\), then the session must be terminated. 
 		\item \(permit\) decision: Must keep the session in the \(ongoing\) phase.
 		\item \(indterminate\) decision: Must trigger one of the following two transitions:
 		\begin{itemize}
@@ -45,17 +45,17 @@ Accordingly, we outline the following possible \gls{ucon} state transition funct
 		\end{itemize}
 		\item \(deny\) decision: Implies that access has been revoked, so this must always trigger a transition to the \(post\) phase.
 	\end{itemize}
-	\item \(post\) phase: Any decision in the \(post\) phase must trigger on of the following two transitions:
+	\item transitions at the \(post\) phase: Any decision in the \(post\) phase must trigger one of the following two transitions:
 	\begin{itemize}
-		\item A transition to the exit thus terminating the session and allowing \(post\) rules to be evaluated only once; or
-		\item A local transition to the \(post\) phase allowing multiple re-evaluation and consequently multiple \(post\) rules to be evaluated and enforced.
+		\item A transition to the exit state thus terminating the session and allowing \(post\) rules to be evaluated only once; or
+		\item A local transition to the \(post\) phase allowing multiple re-evaluations and consequently multiple \(post\) rules to be evaluated and enforced.
 	\end{itemize}
 \end{itemize}
 
-The combinations of the above transitions result in 32 different \gls{ucon} \glspl{dfa}, each having a different transition function \(\delta\).
+The combinations of the above transitions result in 32 different transition functions and consequently in 32 different \gls{ucon} \glspl{dfa}.
 \acrshort{ucsp} must enable these \glspl{dfa} in order to support different use-cases.
 The same \acrshort{ucsp} node may handle different use-cases that require different state models, thus the state model must be selected per usage session rather than per \acrshort{ucsp} node.
-As aforementioned, \acrshort{ucsp} uses \gls{alfa} policy language which conforms to hierarchy of policy sets, policies and rules where combining algorithms are used to resolve conflicts when multiple policy sets, policies or rules are applicable.
+As aforementioned, \acrshort{ucsp} uses \gls{alfa} policy language which conforms to a hierarchy of policy sets, policies and rules where combining algorithms are used to resolve conflicts when multiple policy sets, policies or rules are applicable.
 However, top-level policy sets (i.e., not nested under any other policy sets) are not selected or combined by combining algorithms.
 Instead, \acrshort{ucsp} assumes that top-level policy sets are mutually exclusive, so for each usage request, one and only one top-level policy set is selected and associated with the corresponding usage session.
 %This means that only policy sets and policies that are nested under the selected top-level policy set will be evaluated throughout the lifecycle of the usage session.
@@ -69,10 +69,11 @@ Therefore, when an attribute value changes and policies are re-evaluated, \acrsh
 
 One way to express transitions between phases is using \gls{alfa} policy language such that the current phase and the evaluation decision are considered attributes, and the transition to the next phases is defined as an obligation.
 An example transitions policy is shown in Listing \ref{lst:transitions}.
-The target clause of the policy defines that the policy is applicable when the session is in the \(pre\) phase.
+In this example, the target clause of the policy defines that the policy is applicable when the session is in the \(pre\) phase.
 The target clause of first rule states that the rule must be selected if the evaluation decision is \(permit\), and the obligation states that the phase must be updated to \(ongoing\).
 Similarly, the second rule specifies that the session must move to the end state (i.e., terminated) if the evaluation decision is \(inapplicable\).
 In both cases, the \texttt{permit} effect is not considered because this policy is not used for access control decision, but rather to decide how to transition among \gls{ucon} phases.
+
 Since \gls{alfa} is an access control policy language, it may not be the best language for defining transitions, so we plan to explore Drools \cite{drools}, a rule engine that enables users to define actions to be defined based on conditions.
 \gls{alfa} may have an advantage over \gls{drl} because \acrshort{ucsp} already incorporates an \gls{alfa} policy engine so no extra implementation is required.
 Nevertheless, we will soon provide a comparison between the two languages and use one of them as language for defining and selecting state models, which will be the next and final step of this part of our research.
@@ -86,7 +87,7 @@ Nevertheless, we will soon provide a comparison between the two languages and us
 			permit
 			on permit {
 				obligation to-ongoing {
-					Attributes.ucs.phase = "ongoing"
+					Attributes.ucs.phase = ''ongoing''
 				}
 			}
 		}
@@ -94,13 +95,125 @@ Nevertheless, we will soon provide a comparison between the two languages and us
 			target clause Attributes.ucs.decision == ''inapplicable''
 			permit
 			on permit {
-				obligation to-ongoing {
-					Attributes.ucs.phase = "end"
+				obligation to-end {
+					Attributes.ucs.phase = ''end''
 				}
 			}
 		}
 	};
 \end{lstlisting}
 
+Using policies or rules to define how to transition between \gls{ucon} phases allows an easy addition of other phases such as \(suspended\).
+This is because new phases can be easily expressed in the selected policy/rule language.
+In addition, \gls{alfa} rules can be easily classified with the new phases by adding a check on the phase attribute in the target clauses of rules.
+The implementation of this solution is currently in progress and will be completed soon once the policy/rule language of expressing state transitions is decided.
 
-In \cite{siuv}
+\subsection{Generalised Session-Based \gls{abac} Model}\label{sec:sbsabac}
+We noted in previous sections that the three \gls{ucon} phases (i.e., \(pre\), \(ongoing\) and \(post\)) cannot accommodate complex use-cases as different use-cases require different classifications.
+We also showed that continuous monitoring and re-evaluations do not necessarily have to be restricted to the \(ongoing\) phase.
+Moreover, the original \gls{ucon} model distinguishes between mutable and immutable attributes and assumes that immutable attributes do not change during usage sessions because they require administrative actions in order to be updated.
+We argue that such administrative actions can occur while a usage session is in progress, and consequently all attributes must be considered mutable.
+For this reason, we propose a generalisation of the \gls{ucon} model such that authorisation sessions can be classified into any number of user-defined phases, and all phases are continuous.
+This section defines that state of an authorisation session in the generalised model, and discusses the classification of states into phases.
+
+When a request is created, a set of decision predicates that match the request is selected for evaluation.
+Since decision predicates are formed over attributes, we define the state of an authorisation session as an assignment of values to all attributes required for the evaluation of decision predicates.
+Let \(A\) be the set of attributes that required for the evaluation of decision predicates, and let \(V\) be the set of all possible values corresponding to the required attributes.
+Accordingly, we define the state of an authorisation session as a partial mapping from \(A\) to \(V\) as follows: \[s: A \rightharpoonup V\]
+Based on this definition, the state of an authorisation changes whenever an attribute value is updated.
+Thus, an authorisation session transitions among a set of states where each state is different the others by at least one attribute value.
+The model must allow the classification of authorisation states into user-defined phases.
+Let \(S\) be the set of all possible authorisation states, and let \(P\) be the set of all phases defined by the user for a specific use-case.
+We define the phase of the authorisation as a surjective non-injective mapping from \(S\) to \(P\) as follows: \[\rho: S \rightarrow P\]
+such that: \[\forall p \in P \quad \exists \: s \in S \quad \textnormal{such that}\quad \rho(s) = p\]
+In \gls{ucon}, the mapping from states to phases depends on the evaluation of policies and the corresponding decision.
+Therefore, \gls{ucon} can be realised with our generalised model such that mapping function \(\rho\) from states to phases is the same evaluation function of decision predicates.
+For other use-cases such as data flow control, the mapping into phases does not necessarily depend on the evaluation of decision predicates, and thus the mapping function \(\rho\) is determined by external factors (e.g., flow of data).
+This part of our research is still a work in progress, and we plan to study and verify the formalism of the model in the next steps.
+Furthermore, the model can be generalised further into a continuous policy-based decision making model that goes beyond access control where the decision space is wider than permitting or denying access.
+However, this is a longer term goal that is out of the scope of the current work.
+
+\subsection{Policy-Based Identity and Privilege Management}\label{sec:siuv}
+As mentioned in Section \ref{sec:architectural}, one of our architectural objectives is to adopt the principles of \gls{ucon} in identity and privilege management applications.
+In \cite{siuv}, we introduced \acrshort{siuv}\footnote{\gls{siuv}}: a vehicular \gls{iam} system that supports dynamic and stateful identity and privilege management, context-aware and continuous usage control, as well as the \gls{polp}.
+\gls{siuv} incorporates a centralised policy-based \gls{sts} that manages, authenticates and verifies identities, and exchanges them with contextualised privileges using \glspl{vc}.
+\gls{siuv} also includes \acrshort{ucsp} nodes that protect localised vehicular resources using privileges issued by the \gls{sts} as well as continuous monitoring and policy re-evaluation.
+The \gls{sts} and the architecture of \gls{siuv} are described in the next sections, and more details can be found in the corresponding paper in \cite{siuv}.
+
+\subsubsection{\gls{siuv} \gls{sts}}
+In a typical \gls{sts}, a particular set of privileges may be bound to specific attributes.
+Thus, all subjects that have these attributes will always have the same privileges regardless of the context.
+In addition, issued privileges do not change even if attributes change.
+This usually results in subjects being either overprivileged or underprivileged.
+To solve such issues, we introduced a session-based and policy-based \gls{sts} that exchanges external \glspl{vc} about identity claims (identity \glspl{vc}) with internal contextualised \glspl{vc} that determine the privileges of the corresponding subject.
+The \gls{sts} shares the following common principles with \acrshort{ucsp}:
+Policy-based decision making, which enables a dynamic exchange of identity claims with privileges according to situation-aware policies;
+Session-based continuous monitoring, which allows the \gls{sts} to manage a continuous lifecylce of privileges starting from their issuance and lasting until their expiry or revocation, or even beyond revocation to support post-revocation interactions such as graceful revocation; and
+Policy re-evaluation, which provides the \gls{sts} with the ability to react to changes in identity claims or environmental conditions resulting in privilege escalation, degradation or revocation.
+The architecture of the \gls{sts} can be found in \cite{siuv}.
+
+We use \gls{alfa} policies to determine how the \gls{sts} issues privileges according to identity claims and environmental attributes.
+We particularly use rule obligations to determine the specific privileges that must be issued.
+Thus, each rule is used to define a set of privileges to be issued if the conditions of the rule are met. 
+This allows a fine-grained control on how to issue privileges according to attribute values.
+We use the ``permitUnlessDeny'' combining algorithm, which combines all obligations from all applicable rules that evaluate into permit as long as no deny rule apply.
+An example policy is shown in Listing \ref{lst:driver_sts_policy}.
+
+\begin{lstlisting}[float=!tbh,caption={STS policy example},label={lst:driver_sts_policy}]
+	policySet privileges {
+		apply permitUnlessDeny
+		policy driver {
+			apply firstApplicable
+			rule driver_dk_eu {
+				target clause Attributes.license.expiry > time.now()
+					and Attributes.license.issuer == ''borger.dk''
+				condition Attributes.age > 18
+					and Attributes.ucs.step == ''ongoing''
+				permit
+				on permit {
+					obligation canDrive { command = ''issue_privileges''
+						canDrive = true }
+			}}
+			rule revoke {
+				deny
+				on deny {
+					obligation canDrive { command = ''revoke_privileges''
+						canDrive = false }
+		}}};
+		policy wiperControl {  ...  };
+	};
+\end{lstlisting}
+
+\subsubsection{\acrshort{siuv} Architecture}\label{sec:siuv_architecture}
+The architecture of \acrshort{siuv} is shown in Figure \ref{fig:iam_architecutre} and described as follows.
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=\linewidth]{figures/siuv_architecture.png}
+	\caption{\acrshort{siuv} architecture}
+	\label{fig:iam_architecutre}
+\end{figure}
+
+\texttt{\glspl{idp}}
+are authorities that issue identity \glspl{vc} about drivers, passengers, applications or in-car resources.
+
+\texttt{A subject}
+may be a driver, a passenger, an application or a resource that needs to access other resources, and is represented by a digital wallet that holds the subject's \glspl{vc}.
+The digital wallet interacts with the issuers and the \gls{sts} to present/obtain \glspl{vc}, and with \acrshort{ucsp} nodes to request access to resources.
+
+\texttt{The \gls{vdr}}
+is a distributed hashtable that holds revocation lists and issuers' public keys.
+The \gls{vdr} may also be used to store other relevant information like metadata about proofs or schemas and structures of \glspl{vc}.
+
+\texttt{The \gls{sts}} is the core component that provides dynamic identity and privilege management of subjects.
+
+\texttt{Localised \acrshort{ucsp} nodes} are used to protect resources such as domain controllers or \glspl{ecu}.
+Localised \acrshort{ucsp} nodes make usage decisions based on the localised context and resource attributes as well as privileges issued by the \gls{sts}.
+Thus, the \gls{sts} handles the global context of the whole vehicle, while localised \acrshort{ucsp} nodes manage localised authorisation contexts of individual components.
+
+\subsubsection{GAIA-X \gls{iam}} \label{sec:gaiax}
+The \gls{sts} introduced in \gls{siuv} can be adopted in GAIA-X as a baseline for a policy-based middleware that supports interoperability between identity technologies.
+The middleware can also be used by GAIA-X participants as a service to delegate the issuance and verification of credentials.
+The policy-based evaluation and the continuous monitoring allows the middleware to react to contextual and situational changes and to update the issued credentials accordingly.
+This part of the research is currently in progress and results should be available soon.
+We are studying the different identity technologies that must be supported in GAIA-X as well as the interoperability issues and the different verification mechanisms.

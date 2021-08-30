@@ -3,9 +3,9 @@ In this section we describe our research objectives, which intend to address ses
 We are particularly interested in \acrshort{ucsp}, so our work is based on this particular implementation of \gls{ucon}.
 We categorise our objectives as foundational and architectural, where foundational objectives aim at addressing fundamental issues at the model level, while the purpose of the architectural objectives is solving framework problems as well as use-cases.
 
-\subsection{Foundational}\label{sec:foundational}
+\subsection{Foundational Objectives}\label{sec:foundational}
 \subsubsection{Continuity of \(pre\) and \(post\) Phases}\label{sec:transitions}
-As described in Section \ref{sec:state_model}, our team added continuity to the \(pre\) and \(post\) phases by adding an internal counter of re-evaluations and by keeping the session alive as long as the decision is not \(deny\) and as long as the counter is below a defined threshold
+As described in Section \ref{sec:state_model}, our team added continuity to the \(pre\) and \(post\) phases by adding an internal counter of re-evaluations and by keeping the session alive as long as the decision is not \(deny\) and as long as the counter is below a defined threshold.
 This solution is not optimal and it overlooks some fundamental issues that must be addressed at the model level. 
 Firstly, policies have to be intentionally written in a way that results in an \(indeterminate\) decision as long as the counter has not expired.
 This causes a security risk because the policy language standard does not define how the \(indeterminate\) decision should be treated and leaves such decision to the enforcement point.
@@ -19,11 +19,11 @@ For instance, an enterprise may block employee access to its resources out of wo
 %Therefore, multiple flavours of \gls{ucon} must be available, each with a state model that supports relevant use-cases.
 %One of the objectives of our research is to address the three aforementioned issues.
 Accordingly, we intend to support the continuity of \(pre\) and \(post\) phases even when the evaluation decision is \(deny\), and we intend to support this in the state model.
-Moreover, we plan to define multiple state models that fit different use-cases, and to allow \gls{ucsp} to dynamically select the suitable state model based on the configuration or on the application.
+Moreover, we plan to define multiple state models that fit different use-cases, and to allow \acrshort{ucsp} to dynamically select the suitable state model based on the configuration or on the application.
 
 
 \subsubsection{Additional Classifications}\label{sec:phases}
-Our team's extension of \gls{ucsp} state model in \cite{ucs2020plus} allows the session to stay in the \(ongoing\) phase when the decision is \(indeterminate\) in order to put the authorisation on hold until further information is collected or until behavioural changes are detected.
+Our team's extension of \acrshort{ucsp} state model in \cite{ucs2020plus} allows the session to stay in the \(ongoing\) phase when the decision is \(indeterminate\) in order to put the authorisation on hold until further information is collected or until behavioural changes are detected.
 This changes the semantics of the original \gls{ucon} model, because the \(ongoing\) phase was intended to represent a granted access in progress only.
 An alternative solution would be to go back from \(ongoing\) to \(pre\), but this too changes the semantics of the original model because the \(pre\) phase refers to interactions that happen before the start of usage.
 For this reason, we believe that an additional phase is needed in order to represent such cases where the session is still alive but access is suspended or on hold.
@@ -49,6 +49,6 @@ This allows the contextualisation and management of the lifecycle of privileges 
 Such policy-based and context-aware identity and privilege management is favourable in use-cases such as \gls{iot} and \gls{iov} where situational changes are frequent.
 Moreover, the GAIA-X \gls{iam} specification \cite{gaiax2021iam} defines that identity providers must support both federated identities and \glspl{ssi}.
 However, \gls{ssi} technologies are still immature and organisations have invested heavily in federated identities.
-In addition, there interoperability problems that must be solved in order for \gls{ssi} technologies to coexist with each other and with federated identities.
+In addition, there are interoperability problems that must be solved in order for \gls{ssi} technologies to coexist with each other and with federated identities.
 Policy-based identity and privilege management can solve such problems by providing an automated verification, issuance and exchange of identity credentials between different trust domains that use different identity technologies such as \gls{ssi} or federated identity.
 Therefore, we plan to introduce a policy-based \gls{iam} middleware that complies with GAIA-X specification and supports the interoperability between identity technologies.
