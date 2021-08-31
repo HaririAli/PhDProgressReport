@@ -9,17 +9,17 @@ As described in Section \ref{sec:state_model}, our team added continuity to the 
 This solution is not optimal and it overlooks some fundamental issues that must be addressed at the model level. 
 Firstly, policies have to be intentionally written in a way that results in an \(indeterminate\) decision as long as the counter has not expired.
 This causes a security risk because the policy language standard does not define how the \(indeterminate\) decision should be treated and leaves such decision to the enforcement point.
-For this reason, continuity of these phases must be enabled even when access is denied.
-Secondly, the counter was added to allow re-evaluations of specific attributes or specific changes such as trust level or user behaviour.
-However, the counter may expire due to updates of other attributes before capturing the changes of interest.
+For this reason, continuity of these phases must be enabled even when access is \textit{denied}.
+Secondly, the counter was added to allow monitoring specific attributes or specific changes such as trust level or user behaviour.
+However, the counter may expire before capturing the changes of interest due to other changes or updates.
 This is likely to happen in inconstant environments such as \gls{iot} or \gls{iov} where attribute values change frequently.
 %Therefore, the continuity of the \(pre\) and \(post\) phases must be supported in the state model rather than the implementation.
 Thirdly, continuity of \(pre\) and \(post\) phases is not necessarily ideal for all use-cases, as there may be cases where usage sessions must be terminated upon denial.
 For instance, an enterprise may block employee access to its resources out of working hours, so usage sessions must be denied and terminated immediately in such cases.
 %Therefore, multiple flavours of \gls{ucon} must be available, each with a state model that supports relevant use-cases.
 %One of the objectives of our research is to address the three aforementioned issues.
-Accordingly, we intend to support the continuity of \(pre\) and \(post\) phases even when the evaluation decision is \(deny\), and we intend to support this in the state model.
-Moreover, we plan to define multiple state models that fit different use-cases, and to allow \acrshort{ucsp} to dynamically select the suitable state model based on the configuration or on the application.
+%Accordingly, we intend to support the continuity of \(pre\) and \(post\) phases even when the evaluation decision is \(deny\), and we intend to support this in the state model.
+Accordingly, we intend to define multiple state models that fit different use-cases, and to allow \acrshort{ucsp} to dynamically select the suitable state model based on the configuration or on the application.
 
 
 \subsubsection{Additional Classifications}\label{sec:phases}
@@ -42,8 +42,8 @@ We plan to provide the conceptual definitions of such model as well as the mathe
 
 \subsection{Architectural}\label{sec:architectural}
 Our architectural objectives are concerned with different deployments and applications of \acrshort{ucsp} according to different use-cases.
-Distribution of \acrshort{ucsp} and proper distributed session management are among our architectural objectives.
-We aim to analyse different distributed architectures for cloud and \gls{iot} environments and to study possible approaches of session management.
+Clustering of \acrshort{ucsp} and proper session management in clusters are among our architectural objectives.
+We aim to analyse different clustering architectures for cloud and \gls{iot} environments and to study possible approaches of session management.
 A more important objective is to adopt the principles of \gls{ucon} (i.e., policy-based decision making, session-based continuous monitoring, as well as policy re-evaluation and revision) in identity and privilege management use-cases. 
 This allows the contextualisation and management of the lifecycle of privileges and identities and to adapt them to changing situations and environmental conditions.
 Such policy-based and context-aware identity and privilege management is favourable in use-cases such as \gls{iot} and \gls{iov} where situational changes are frequent.

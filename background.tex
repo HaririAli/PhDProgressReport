@@ -7,7 +7,7 @@ Authorisations are functional predicates over subject and object attributes, and
 The main novelty of \gls{ucon} is that it extends access control with mutability of attributes and continuity of control.
 Unlike preceding models, \gls{ucon} assumes that some attribute values may change during usage of resources.
 For this reason, it specifies that authorisations, obligations and conditions must be evaluated before access starts, while access is in progress, and after access ends, which adds continuity of control.
-Therefore, if an attribute value changes while access is in progress, and the security policy is not satisfied anymore, \gls{ucon} revokes the granted authorisation.
+Therefore, if an attribute value changes while access is in progress and the security policy is not satisfied anymore, \gls{ucon} revokes the granted authorisation.
 \gls{ucon} classifies authorisation, obligation and condition predicates as \(pre\) and \(ongoing\)
 \footnote{The original model classifies predicates as \(pre\) and \(on\), but in this report we refer to the \(on\) classification as \(ongoing\) (for clarity and consistency).} 
 (i.e., \(preA\), \(ongoingA\), \(preB\), \(ongoingB\), \(preC\) and \(ongoingC\)), where \(pre\) predicates are evaluated before usage starts and \(ongoing\) predicates are evaluated while usage is in progress.
@@ -20,7 +20,7 @@ Park et al. assume that environmental attributes do not change during usage, and
 However, as described by Carniani et al. \cite{ucs2016cloudsys}, attributes may change due to reasons unrelated to usage (e.g., subject's location changes as they move), and environmental attributes can change during usage (e.g., date, time, CPU load, temperature, etc.).
 
 The original \gls{ucon} model \cite{ucon} assumes that obligations are actions that must be fulfilled by the subject to gain access.
-However, Katt et al. \cite{katt2008general} argue that obligations can also express actions to be taken by the system itself rather than the subject.
+However, Katt et al. \cite{katt2008general} argued that obligations can also express actions to be taken by the system itself rather than the subject.
 For example, the security policy may define that a notification must be sent or a file must be deleted after the end of the usage session.
 Moreover, Katt et al. consider attribute updates as a special type of obligations that must be performed by the system.
 Accordingly, they extended the original \gls{ucon} model by introducing post obligations \(postB\), which are used to express \(postUpdates\) as well as actions that must be taken after the usage ends.
@@ -31,14 +31,13 @@ Accordingly, they extended the original \gls{ucon} model by introducing post obl
 Lazouski et al. \cite{ucs2012prototype}\cite{uxacml} extended the semantics of the \gls{xacml} \cite{xacml} policy language with \gls{ucon} novelties to capture attribute updates and continuous policy evaluation while preserving a full \gls{abac} baseline. 
 The extended policy language was designated as U-XACML and it introduces an implicit temporal state by classifying policy rules as \(pre\), \(ongoing\) or \(post\), such that \(pre\) rules are applicable before granting access, \(ongoing\) rules are applicable while access is in progress, and \(post\) rules are applicable after the end of access.
 We refer to these three classifications as the \textit{phases} of a \gls{ucon} session.
-The authors assume that the \(pre\) and \(post\) evaluations are duration-less, which means that \(pre\) and \(post\) rules are evaluated only once in a single session.
+The authors assume that the \(pre\) and \(post\) evaluations are duration-less, which means that \(pre\) and \(post\) rules are evaluated only once in a usage session.
 On the other hand, they consider the \(ongoing\) evaluation to be continuous such that \(ongoing\) rules are re-evaluated every time an attribute value changes.
 Lazouski et al. also developed a framework for enforcement of U-XACML, where they extended the \gls{xacml} architecture to support attribute monitoring and continuous re-evaluation.
 The main novelty of their architecture was adding the Usage Monitor (UM) component, also known as the \gls{sm}, which keeps track of usage sessions and invokes re-evaluations when a change in attribute values occurs.
 This framework/architecture was later named the \gls{ucs}, and it has been extended and leveraged in multiple use-cases such as \gls{iot} \cite{ucs2017iot}, cloud systems \cite{ucs2016cloudsys}, Android mobile devices \cite{ucs2017android}, network management \cite{ucs2020mano}, and messaging protocols \cite{ucs2017mqtt}.
-In \cite{ucs2019ifttt}, La Marra et al. used \gls{ifttt} to express \gls{ucon} obligations, then they leveraged \gls{ucs} for use-cases that go beyond access control.
-They specifically used \gls{ucon} to trigger \gls{ifttt} applets based on policy-evaluation.
-One example of such use-cases is a smart farm where the humidity and temperature are collected from sensors and used as attributes in \gls{ucs}, which decides when to start watering or heating the plants.
+In \cite{ucs2019ifttt}, La Marra et al. used \gls{ifttt} to express \gls{ucon} obligations, then they leveraged \gls{ucon} obligations to trigger \gls{ifttt} applets based on policy-evaluation, which demonstrates that \gls{ucon} can be used for use-cases that go beyond access control.
+One example of such use-cases is a smart farm where the humidity and temperature are collected from sensors and used as attributes in \gls{ucon} to decides when to start watering or heating the plants.
 
 Our team introduced an enhanced and optimised version of \gls{ucs} designated as \acrshort{ucsp} \cite{ucs2020plus}.
 \acrshort{ucsp} supports auxiliary evaluators such as trust/confidence level evaluators that can be used and included in the decision making process.
@@ -46,14 +45,16 @@ Our team introduced an enhanced and optimised version of \gls{ucs} designated as
 %This supports pre- and post-usage interactions such as multi-factor authentication, safe revocation, etc.
 It also introduces internal attributes that are specific to a single usage session and managed internally as part of the session.
 Instead of U-XACML, \acrshort{ucsp} uses the \gls{alfa} \cite{alfa} policy language, which is a pseudocode domain-specific policy language that maps directly to \gls{xacml} without adding any new semantics.
-It is much less verbose than \gls{xacml} and consequently more compact and shorter in size, thus using \gls{alfa} in \acrshort{ucsp} results in a considerable improvement in performance and efficiency.
+It is much less verbose than \gls{xacml} and consequently more compact and shorter in size.
+As such, \gls{alfa} enables a considerable improvement in performance and efficiency of policy parsing and evaluation.
 \gls{alfa} conforms to the same hierarchical structure of \gls{xacml} which incorporates policy sets, policies and rules.
 A policy set consists of one or more policy sets and/or policies, and a policy consists of one or more rules.
 Like \gls{xacml}, \gls{alfa} also relies on combining algorithms to resolve conflicts when multiple policies or rules are applicable.
 %For each usage session, \acrshort{ucsp} selects a top-level policy set (i.e., not nested under any other policy set), and associates it with the usage session.
 %\acrshort{ucsp} assumes that top-level policy sets are mutually exclusive, so for each usage session there will be one and only one applicable policy set that will be re-evaluated throughout the lifecycle of the session.
 To classify rules as \(pre\), \(ongoing\) and \(post\), \acrshort{ucsp} does not add any new semantics to \gls{alfa} but rather uses an internal attribute to capture the implicit temporal state.
-The attribute is called \texttt{step} and it takes one of the following three string values: ``\texttt{pre}'', ``\texttt{ongoing}'' or ``\texttt{post}'', and it is updated by the system as the usage session moves among the three phases.
+The attribute is called \texttt{step} and takes one of the following three string values: ``\texttt{pre}'', ``\texttt{ongoing}'' or ``\texttt{post}''.
+It is updated by the system as the usage session moves among the three phases.
 Therefore, rules can be classified by including a check on the value of the \texttt{step} attribute.
 
 \acrshort{ucsp} leverages the publish/subscribe pattern to boost concurrency between policy parsing and evaluation, and attribute retrieval.
