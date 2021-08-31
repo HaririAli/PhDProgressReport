@@ -196,15 +196,15 @@ The architecture of \acrshort{siuv} is shown in Figure \ref{fig:iam_architecutre
 \end{figure}
 
 \texttt{\glspl{idp}}
-are authorities that issue identity \glspl{vc} about drivers, passengers, applications or in-car resources.
+are authorities that issue identity \glspl{vc} about drivers, passengers or applications.
 
 \texttt{A subject}
-may be a driver, a passenger, an application or a resource that needs to access other resources, and is represented by a digital wallet that holds the subject's \glspl{vc}.
+may be a driver, a passenger or an application that needs to access other resources, and is represented by a digital wallet that holds the subject's \glspl{vc}.
 The digital wallet interacts with the issuers and the \gls{sts} to present/obtain \glspl{vc}, and with \acrshort{ucsp} nodes to request access to resources.
 
 \texttt{The \gls{vdr}}
-is a distributed hashtable that holds revocation lists and issuers' public keys.
-The \gls{vdr} may also be used to store other relevant information like metadata about proofs or schemas and structures of \glspl{vc}.
+is a distributed hash table that holds revocation lists and issuers' public keys.
+The \gls{vdr} may also be used to store other relevant information like metadata about proofs or schemas of \glspl{vc}.
 
 \texttt{The \gls{sts}} is the core component that provides dynamic identity and privilege management of subjects.
 
